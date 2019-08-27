@@ -87,8 +87,7 @@ public class AnimeList implements Serializable {
             for (int i = 0; i < array.length(); i++) {
                 //"id, isActive, isAiring, myAnimeListScore, year, typeTitle, titles, posterUrlSmall"
                 JSONObject obj = array.getJSONObject(i);
-                Anime anime = new Anime();
-                anime.Parse(obj);
+                Anime anime = new Anime(obj);
                 animeList.add(anime);
             }
             if (array.length() < ANIME_LIMIT)

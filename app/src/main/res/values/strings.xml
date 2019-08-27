@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Anime watcher</string>
+    <string name="app_name">Anime online</string>
     <string name="search_anime">Search anime…</string>
     <string name="ongoings">Ongoings</string>
     <string name="all">All</string>
@@ -16,8 +16,12 @@
     <string name="year">Year</string>
     <string name="from">From</string>
     <string name="to">To</string>
-    <string name="rating">Rating</string>
+    <string name="score">Score</string>
     <string name="ongoing">Ongoing</string>
     <string name="any_genres">Any selected genre</string>
     <string name="all_genres">All selected genre</string>
+    <string name="season">Season</string>
+    <string name="episodes">Episodes</string>
+    <string name="type">Type</string>
+    <string name="rating">Rating</string>
 </resources>

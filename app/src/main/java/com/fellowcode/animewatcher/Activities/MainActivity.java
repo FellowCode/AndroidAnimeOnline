@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements MaterialSearchBar
         setContentView(R.layout.activity_main);
 
         searchBar = findViewById(R.id.searchBar);
-        searchBar.setPlaceHolder(getString(R.string.anime_list));
+        searchBar.setPlaceHolder(getString(R.string.app_name));
         searchBar.inflateMenu(R.menu.main);
         searchBar.setOnSearchActionListener(this);
 

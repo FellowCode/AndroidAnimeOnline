@@ -8,20 +8,26 @@ import java.io.Serializable;
 public class Anime implements Serializable {
     //"id, isActive, isAiring, myAnimeListScore, year, typeTitle, titles, posterUrlSmall"
     public int id;
-    int isActive;
-    int isAiring;
-    String myAnimeListScore;
-    int year;
-    String type;
-    String typeTitle;
-    String russian;
-    String english;
-    String romaji;
-    String posterUrlSmall;
+    public int shikiId;
+    public int isActive;
+    public int isAiring;
+    public String myAnimeListScore;
+    public int year;
+    public String type;
+    public String typeTitle;
+    public String russian;
+    public String english;
+    public String romaji;
+    public String posterUrlSmall;
 
+    public Anime(JSONObject anime) throws JSONException {
+        Parse(anime);
+    }
 
+    public Anime() {
+    }
 
-    public Anime setScore(String score){
+    public Anime setScore(String score) {
         /*float sc = Float.valueOf(score);
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
@@ -35,7 +41,7 @@ public class Anime implements Serializable {
         return this;
     }
 
-    String getTitle(String lang){
+    String getTitle(String lang) {
         if (lang.equals("ru"))
             return russian;
         if (lang.equals("en"))
@@ -54,8 +60,9 @@ public class Anime implements Serializable {
             romaji = titles.getString("romaji");
     }
 
-    void Parse(JSONObject anime) throws JSONException{
+    public void Parse(JSONObject anime) throws JSONException {
         id = anime.getInt("id");
+        shikiId = anime.getInt("myAnimeListId");
         isActive = anime.getInt("isActive");
         isAiring = anime.getInt("isAiring");
         setScore(anime.getString("myAnimeListScore"));
@@ -64,5 +71,9 @@ public class Anime implements Serializable {
         typeTitle = anime.getString("typeTitle");
         setTitles(anime.getJSONObject("titles"));
         posterUrlSmall = anime.getString("posterUrlSmall");
+    }
+
+    protected Anime get() {
+        return this;
     }
 }

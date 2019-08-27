@@ -1,6 +1,8 @@
 package com.fellowcode.animewatcher.Anime;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.fellowcode.animewatcher.Activities.AnimeActivity;
 import com.fellowcode.animewatcher.R;
 
 import java.util.ArrayList;
@@ -33,8 +36,16 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position){
-        holder.bind(list.get(position));
+    public void onBindViewHolder(ViewHolder holder, final int position){
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AnimeActivity.class);
+                intent.putExtra("anime", list.get(position));
+                context.startActivity(intent);
+            }
+        };
+        holder.bind(list.get(position), listener);
     }
 
     @Override
@@ -49,6 +60,9 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
         TextView type;
         TextView year;
         TextView score;
+        CardView cardView;
+
+        Anime anime;
 
 
         public ViewHolder(View itemView){
@@ -58,9 +72,10 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
             type = itemView.findViewById(R.id.type);
             year = itemView.findViewById(R.id.year);
             score = itemView.findViewById(R.id.score);
+            cardView = itemView.findViewById(R.id.card_view);
         }
 
-        public void bind(Anime anime){
+        public void bind(Anime anime, View.OnClickListener listener){
             image.layout(0,0,0,0);
             Glide.get(context).setMemoryCategory(MemoryCategory.HIGH);
             Glide.with(context)
@@ -81,6 +96,10 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
             type.setText(at.getTitle(anime.type));
             type.setBackgroundResource(at.getSpanBgRes(anime.type));
             year.setBackgroundResource(at.getSpanBgRes(anime.type));
+
+            this.anime = anime;
+
+            cardView.setOnClickListener(listener);
         }
     }
 }

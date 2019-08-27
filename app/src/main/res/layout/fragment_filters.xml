@@ -164,7 +164,7 @@
                     android:paddingTop="10dp"
                     android:paddingEnd="20dp"
                     android:paddingBottom="10dp"
-                    android:text="@string/rating"
+                    android:text="@string/score"
                     android:textSize="24sp" />
 
                 <LinearLayout

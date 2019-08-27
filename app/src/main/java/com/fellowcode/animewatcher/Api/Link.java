@@ -23,6 +23,8 @@ public class Link {
 
     private boolean animes = false;
 
+    private boolean isShiki = false;
+
 
     private ArrayList<Field> fields;
     private ArrayList<Field> filterFields;
@@ -32,11 +34,16 @@ public class Link {
         filterFields = new ArrayList<>();
     }
 
+    public Link shiki(){
+        isShiki = true;
+        link = "https://shikimori.one/";
+        return this;
+    }
 
     public Link animes(int offset) {
         url = "series";
         if (!animes) {
-            addField("fields", "id,isActive,isAiring,myAnimeListScore,year,type,typeTitle,titles,posterUrlSmall");
+            addField("fields", "id,myAnimeListId,isActive,isAiring,myAnimeListScore,year,type,typeTitle,titles,posterUrlSmall");
             addField("limit", 20);
             addField("isHentai", 0);
         }
@@ -46,7 +53,10 @@ public class Link {
     }
 
     public Link anime(int id){
-        url = "series/"+id;
+        if (isShiki)
+            url = "animes/"+id;
+        else
+            url = "series/"+id;
         return this;
     }
 
