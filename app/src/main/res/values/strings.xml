@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Anime watcher</string>
+    <string name="search_anime">Search anime…</string>
+    <string name="ongoings">Ongoings</string>
+    <string name="all">All</string>
+    <string name="all_animes">All animes</string>
+    <string name="favorites">Favorites</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
+    <string name="anime_list">Anime list</string>
+    <string name="apply_filters">Apply filters</string>
+    <string name="genres">Genres</string>
+    <string name="types">Types</string>
+    <string name="year">Year</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="rating">Rating</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="any_genres">Any selected genre</string>
+    <string name="all_genres">All selected genre</string>
+</resources>

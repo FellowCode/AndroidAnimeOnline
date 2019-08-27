@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MainActivity"
+    android:orientation="vertical">
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        style="@style/MaterialSearchBarLight"
+        app:mt_speechMode="false"
+        app:mt_hint="@string/search_anime"
+        app:mt_maxSuggestionsCount="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchBar"
+        android:background="?colorPrimary"
+        app:mt_searchBarColor="?colorPrimary"
+        app:mt_placeholderColor="?toolbarTextColor"
+        app:mt_hintColor="?toolbarTextColor"
+        app:mt_searchIconTint="?toolbarTextColor"
+        app:mt_menuIconTint="?toolbarTextColor"
+        app:mt_clearIconTint="?toolbarTextColor"
+        app:mt_backIconTint="?toolbarTextColor"
+        app:mt_textColor="?toolbarTextColor"/>
+
+    <FrameLayout
+        android:id="@+id/fragment_main"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <include layout="@layout/panel_main"/>
+
+</LinearLayout>

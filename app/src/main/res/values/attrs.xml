@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GlobalAttrDeclare">
+        <attr name="textColor" format="reference"/>
+        <attr name="errorTextColor" format="reference"/>
+        <attr name="backgroundColor" format="reference"/>
+        <attr name="dividerColor" format="reference"/>
+        <attr name="iconColor" format="reference"/>
+        <attr name="toolbarTextColor" format="reference"/>
+        <attr name="recyclerBg" format="reference"/>
+    </declare-styleable>
+</resources>

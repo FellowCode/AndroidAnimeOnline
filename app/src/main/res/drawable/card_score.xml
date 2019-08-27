@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="-20dp"
+        android:right="20dp"
+        android:top="-40dp"
+        android:bottom="-10dp">
+        <rotate android:fromDegrees="135">
+            <shape>
+                <gradient android:startColor="#B7000000" android:endColor="#5B000000"  android:angle="-90.0"/>
+                <corners android:bottomRightRadius="5dp"/>
+                <size android:width="80dp" android:height="80dp"/>
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

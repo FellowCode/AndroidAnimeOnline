@@ -1,0 +1,29 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="iconColor">@color/icon</item>
+        <item name="backgroundColor">@color/background</item>
+        <item name="dividerColor">@color/divider</item>
+        <item name="toolbarTextColor">@color/toolbarText</item>
+        <item name="recyclerBg">@color/recyclerBg</item>
+    </style>
+
+    <style name="DarkTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/dark_text</item>
+        <item name="iconColor">@color/dark_icon</item>
+        <item name="backgroundColor">@color/dark_background</item>
+        <item name="dividerColor">@color/dark_divider</item>
+        <item name="toolbarTextColor">@color/dark_toolbarText</item>
+        <item name="recyclerBg">@color/dark_recyclerBg</item>
+    </style>
+
+</resources>
