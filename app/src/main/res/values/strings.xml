@@ -24,4 +24,11 @@
     <string name="episodes">Episodes</string>
     <string name="type">Type</string>
     <string name="rating">Rating</string>
+    <string name="type_colon">Type:</string>
+    <string name="score_colon">Score:</string>
+    <string name="rating_colon">Rating:</string>
+    <string name="season_colon">Season:</string>
+    <string name="aired_on">Aired on:</string>
+    <string name="released_on">Released on:</string>
+    <string name="next_episode">Next episode:</string>
 </resources>

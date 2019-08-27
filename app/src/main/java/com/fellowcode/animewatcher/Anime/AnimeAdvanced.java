@@ -20,6 +20,9 @@ public class AnimeAdvanced extends Anime implements Serializable {
 
     public String posterUrl;
     public String season;
+    public String aired_on;
+    public String released_on;
+    public String next_episode_at;
     public int numberOfEpisodes;
     public int countViews;
     public String rating;
@@ -85,6 +88,15 @@ public class AnimeAdvanced extends Anime implements Serializable {
 
     public void ParseShiki(JSONObject anime) throws JSONException{
         rating = anime.getString("rating");
+        aired_on = anime.getString("aired_on");
+        if (aired_on.equals("null"))
+            aired_on = null;
+        released_on = anime.getString("released_on");
+        if (released_on.equals("null"))
+            released_on = null;
+        next_episode_at = anime.getString("next_episode_at");
+        if (next_episode_at.equals("null"))
+            next_episode_at = null;
     }
 
     public String getGenres(){

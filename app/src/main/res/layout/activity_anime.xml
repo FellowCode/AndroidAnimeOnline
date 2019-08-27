@@ -76,7 +76,8 @@
                                 style="@style/AnimeFieldTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/type" />
+                                android:text="@string/type_colon"
+                                android:tag="fieldTitle"/>
 
                             <TextView
                                 android:id="@+id/type"
@@ -94,25 +95,7 @@
                                 style="@style/AnimeFieldTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/season" />
-
-                            <TextView
-                                android:id="@+id/season"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
-
-                            <TextView
-                                style="@style/AnimeFieldTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/score" />
+                                android:text="@string/score_colon" />
 
                             <TextView
                                 android:id="@+id/score"
@@ -130,10 +113,81 @@
                                 style="@style/AnimeFieldTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/rating" />
+                                android:text="@string/rating_colon" />
 
                             <TextView
                                 android:id="@+id/rating"
+                                style="@style/AnimeFieldValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/anime_field">
+
+                            <TextView
+                                style="@style/AnimeFieldTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/season_colon" />
+
+                            <TextView
+                                android:id="@+id/season"
+                                style="@style/AnimeFieldValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/anime_field">
+
+                            <TextView
+                                style="@style/AnimeFieldTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/aired_on" />
+
+                            <TextView
+                                android:id="@+id/aired_on"
+                                style="@style/AnimeFieldValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/released_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/anime_field">
+
+                            <TextView
+                                style="@style/AnimeFieldTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/released_on" />
+
+                            <TextView
+                                android:id="@+id/released_on"
+                                style="@style/AnimeFieldValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/nextep_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/anime_field">
+
+                            <TextView
+                                style="@style/AnimeFieldTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/next_episode" />
+
+                            <TextView
+                                android:id="@+id/next_episode"
                                 style="@style/AnimeFieldValue"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
