@@ -30,7 +30,7 @@
                     android:paddingEnd="10dp"
                     android:paddingBottom="10dp"
                     android:text="@string/genres"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="30dp"
@@ -58,7 +58,7 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
                 android:text="@string/any_genres"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:background="@drawable/filter_item"/>
 
             <LinearLayout
@@ -77,7 +77,7 @@
                     android:paddingEnd="10dp"
                     android:paddingBottom="10dp"
                     android:text="@string/types"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="30dp"
@@ -108,7 +108,7 @@
                     android:paddingEnd="20dp"
                     android:paddingBottom="10dp"
                     android:text="@string/year"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                         android:maxLength="4"
                         android:paddingStart="5dp"
                         android:paddingEnd="0dp"
-                        android:textSize="22sp" />
+                        android:textSize="20sp" />
 
                     <FrameLayout
                         android:layout_width="15dp"
@@ -148,7 +148,7 @@
                         android:maxLength="4"
                         android:paddingStart="5dp"
                         android:paddingEnd="0dp"
-                        android:textSize="22sp" />
+                        android:textSize="20sp" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -165,7 +165,7 @@
                     android:paddingEnd="20dp"
                     android:paddingBottom="10dp"
                     android:text="@string/score"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -184,7 +184,7 @@
                         android:maxLength="4"
                         android:paddingStart="5dp"
                         android:paddingEnd="0dp"
-                        android:textSize="22sp" />
+                        android:textSize="20sp" />
 
                     <FrameLayout
                         android:layout_width="15dp"
@@ -205,7 +205,7 @@
                         android:maxLength="4"
                         android:paddingStart="5dp"
                         android:paddingEnd="0dp"
-                        android:textSize="22sp" />
+                        android:textSize="20sp" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -226,7 +226,7 @@
                     android:paddingEnd="20dp"
                     android:paddingBottom="10dp"
                     android:text="@string/ongoing"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
                 <CheckBox
                     android:id="@+id/ongoing"
@@ -246,7 +246,7 @@
         android:id="@+id/apply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:text="@string/apply_filters" />
+        android:text="@string/apply_filters"
+        android:textColor="#FFF"
+        android:background="@drawable/watch_btn"/>
 </LinearLayout>

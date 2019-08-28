@@ -1,36 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MainActivity"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        style="@style/MaterialSearchBarLight"
-        app:mt_speechMode="false"
-        app:mt_hint="@string/search_anime"
-        app:mt_maxSuggestionsCount="10"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/searchBar"
-        android:background="?colorPrimary"
-        app:mt_searchBarColor="?colorPrimary"
-        app:mt_placeholderColor="?toolbarTextColor"
-        app:mt_hintColor="?toolbarTextColor"
-        app:mt_searchIconTint="?toolbarTextColor"
-        app:mt_menuIconTint="?toolbarTextColor"
-        app:mt_clearIconTint="?toolbarTextColor"
-        app:mt_backIconTint="?toolbarTextColor"
-        app:mt_textColor="?toolbarTextColor"/>
+        android:fitsSystemWindows="false">
 
-    <FrameLayout
-        android:id="@+id/fragment_main"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/SearchToolBar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="?toolbarTextColor" />
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary"
+            app:tabTextColor="?toolbarTextColor"
+            app:layout_scrollFlags="scroll|enterAlways"/>
+    </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/panel_main"/>
 
-</LinearLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
+        <!--<com.mancj.materialsearchbar.MaterialSearchBar
+            android:id="@+id/searchBar"
+            style="@style/MaterialSearchBarLight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary"
+            app:mt_backIconTint="?toolbarTextColor"
+            app:mt_clearIconTint="?toolbarTextColor"
+            app:mt_hint="@string/search_anime"
+            app:mt_hintColor="?toolbarTextColor"
+            app:mt_maxSuggestionsCount="10"
+            app:mt_menuIconTint="?toolbarTextColor"
+            app:mt_placeholderColor="?toolbarTextColor"
+            app:mt_searchBarColor="?colorPrimary"
+            app:mt_searchIconTint="?toolbarTextColor"
+            app:mt_speechMode="false"
+            app:mt_textColor="?toolbarTextColor" />-->
+
+        <include layout="@layout/panel_main" />
+</android.support.design.widget.CoordinatorLayout>

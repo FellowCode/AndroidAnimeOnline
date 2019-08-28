@@ -19,6 +19,7 @@ public class Anime implements Serializable {
     public String english;
     public String romaji;
     public String posterUrlSmall;
+    public String posterUrl;
 
     public Anime(JSONObject anime) throws JSONException {
         Parse(anime);
@@ -71,6 +72,7 @@ public class Anime implements Serializable {
         typeTitle = anime.getString("typeTitle");
         setTitles(anime.getJSONObject("titles"));
         posterUrlSmall = anime.getString("posterUrlSmall");
+        posterUrl = anime.getString("posterUrl");
     }
 
     protected Anime get() {

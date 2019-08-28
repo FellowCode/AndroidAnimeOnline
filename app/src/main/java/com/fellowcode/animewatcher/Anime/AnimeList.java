@@ -1,6 +1,8 @@
 package com.fellowcode.animewatcher.Anime;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -28,11 +30,18 @@ public class AnimeList implements Serializable {
 
     boolean endOfList = false;
 
+    private int ANIME_LIMIT = 20;
+
     public AnimeList() {
         adapter = new AnimeAdapter(animes);
     }
 
-    private int ANIME_LIMIT = 20;
+    public AnimeList(Context context, Api api, RecyclerView recyclerView){
+        adapter = new AnimeAdapter(animes);
+        setContext(context);
+        setApi(api);
+        setRecyclerView(recyclerView);
+    }
 
     public AnimeList setApi(Api api){
         this.api = api;
@@ -47,6 +56,7 @@ public class AnimeList implements Serializable {
     public AnimeList setRecyclerView(RecyclerView recycler){
         recyclerView = recycler;
         recyclerView.setAdapter(adapter);
+        recyclerScrollSetup();
         return this;
     }
 
@@ -96,7 +106,7 @@ public class AnimeList implements Serializable {
         } catch (JSONException e) {
             e.printStackTrace();
             endOfList = true;
-            return new ArrayList<Anime>();
+            return new ArrayList<>();
         }
     }
 
@@ -116,5 +126,19 @@ public class AnimeList implements Serializable {
         }
         adapter = new AnimeAdapter(animes);
         recyclerView.setAdapter(adapter);
+    }
+
+    void recyclerScrollSetup(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                GridLayoutManager layoutManager = ((GridLayoutManager)recyclerView.getLayoutManager());
+                assert layoutManager != null;
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                if (lastVisibleItemPosition > (size() - ANIME_LIMIT * 0.5))
+                    loadAnimes();
+            }
+        });
     }
 }

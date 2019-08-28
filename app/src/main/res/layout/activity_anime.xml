@@ -1,220 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?recyclerBg"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="?toolbarTextColor" />
 
-    <ScrollView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false">
 
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:layout_scrollFlags="scroll|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="?toolbarTextColor" />
+    </android.support.design.widget.AppBarLayout>
 
-            <TextView
-                android:id="@+id/title"
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:textAlignment="center"
-                android:textSize="20sp" />
+                android:orientation="vertical"
+                android:background="?recyclerBg">
 
-            <TextView
-                android:id="@+id/title_romaji"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:textAlignment="center"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/title_romaji"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textAlignment="center"
+                    android:textSize="16sp" />
 
-                <LinearLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.fellowcode.animewatcher.Utils.ImageFixed
-                        android:id="@+id/poster"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2" />
-
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <FrameLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
+                            android:layout_weight="2">
 
-                            <TextView
-                                style="@style/AnimeFieldTitle"
+                            <com.github.ybq.android.spinkit.SpinKitView
+                                android:id="@+id/loader"
+                                style="@style/SpinKitView.CubeGrid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/type_colon"
-                                android:tag="fieldTitle"/>
+                                android:layout_gravity="center"
+                                app:SpinKit_Color="@color/colorAccent" />
 
-                            <TextView
-                                android:id="@+id/type"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
+                            <com.fellowcode.animewatcher.Utils.ImageFixed
+                                android:id="@+id/poster"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
-                        </LinearLayout>
+                        </FrameLayout>
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
+                            android:layout_weight="3"
+                            android:orientation="vertical">
 
-                            <TextView
-                                style="@style/AnimeFieldTitle"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/score_colon" />
+                                android:background="@drawable/anime_field">
 
-                            <TextView
-                                android:id="@+id/score"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
+                                <TextView
+                                    style="@style/AnimeFieldTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:tag="fieldTitle"
+                                    android:text="@string/type_colon" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
+                                <TextView
+                                    android:id="@+id/type"
+                                    style="@style/AnimeFieldValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
 
-                            <TextView
-                                style="@style/AnimeFieldTitle"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/rating_colon" />
+                                android:background="@drawable/anime_field">
 
-                            <TextView
-                                android:id="@+id/rating"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
+                                <TextView
+                                    style="@style/AnimeFieldTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/score_colon" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
+                                <TextView
+                                    android:id="@+id/score"
+                                    style="@style/AnimeFieldValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
 
-                            <TextView
-                                style="@style/AnimeFieldTitle"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/season_colon" />
+                                android:background="@drawable/anime_field">
 
-                            <TextView
-                                android:id="@+id/season"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
+                                <TextView
+                                    style="@style/AnimeFieldTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/rating_colon" />
 
-                            <TextView
-                                style="@style/AnimeFieldTitle"
-                                android:layout_width="wrap_content"
+                                <TextView
+                                    android:id="@+id/rating"
+                                    style="@style/AnimeFieldValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/aired_on" />
+                                android:background="@drawable/anime_field">
 
-                            <TextView
-                                android:id="@+id/aired_on"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:id="@+id/released_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
+                                <TextView
+                                    style="@style/AnimeFieldTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/studio_colon" />
 
-                            <TextView
-                                style="@style/AnimeFieldTitle"
-                                android:layout_width="wrap_content"
+                                <TextView
+                                    android:id="@+id/studio"
+                                    style="@style/AnimeFieldValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/released_on" />
+                                android:background="@drawable/anime_field">
 
-                            <TextView
-                                android:id="@+id/released_on"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:id="@+id/nextep_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/anime_field">
+                                <TextView
+                                    style="@style/AnimeFieldTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/aired_on" />
 
-                            <TextView
-                                style="@style/AnimeFieldTitle"
-                                android:layout_width="wrap_content"
+                                <TextView
+                                    android:id="@+id/aired_on"
+                                    style="@style/AnimeFieldValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/released_layout"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/next_episode" />
+                                android:background="@drawable/anime_field">
 
-                            <TextView
-                                android:id="@+id/next_episode"
-                                style="@style/AnimeFieldValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                <TextView
+                                    style="@style/AnimeFieldTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/released_on" />
+
+                                <TextView
+                                    android:id="@+id/released_on"
+                                    style="@style/AnimeFieldValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/nextep_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/anime_field">
+
+                                <TextView
+                                    style="@style/AnimeFieldTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/next_episode" />
+
+                                <TextView
+                                    android:id="@+id/next_episode"
+                                    style="@style/AnimeFieldValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
+                </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <LinearLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginTop="10dp">
 
-                    <TextView
-                        android:id="@+id/genres"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/genres"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/anime_field2"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="5dp"
+                            android:textSize="16sp" />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/watch_btn"
+                            android:drawableStart="@drawable/ic_play_arrow"
+                            android:drawablePadding="10dp"
+                            android:paddingStart="15dp"
+                            android:paddingTop="5dp"
+                            android:paddingEnd="15dp"
+                            android:paddingBottom="5dp"
+                            android:text="@string/watch_online"
+                            android:textColor="#FFFFFF" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:id="@+id/description"
@@ -223,9 +274,15 @@
                         android:layout_marginBottom="5dp"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp" />
+                </android.support.v7.widget.CardView>
 
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/charactersView"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="10dp"
+                    android:background="?recyclerBg" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

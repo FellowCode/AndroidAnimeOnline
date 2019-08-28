@@ -36,7 +36,6 @@ public class FilteredAnimesFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.addItemDecoration(new AnimeItemDecoration(15));
-        recyclerScrollSetup();
         animeList = new AnimeList().setContext(getContext()).setApi(api).setRecyclerView(recyclerView);
 
         return view;
@@ -44,11 +43,12 @@ public class FilteredAnimesFragment extends Fragment {
 
     public void SetupFilter(final Link link){
         animeList.clear();
+        link.animes();
         animeList.setRequest(new AnimeListRequest() {
             @Override
             public Link getUrl() {
                 Log.d("request", "ReqFilter");
-                return link.animes(animeList.size());
+                return link.offset(animeList.size());
             }
 
             @Override
@@ -58,17 +58,4 @@ public class FilteredAnimesFragment extends Fragment {
         }).loadAnimes();
     }
 
-    void recyclerScrollSetup(){
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                GridLayoutManager layoutManager = ((GridLayoutManager)recyclerView.getLayoutManager());
-                assert layoutManager != null;
-                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                if (lastVisibleItemPosition > (animeList.size() - ANIMES_LIMIT * 0.5))
-                    animeList.loadAnimes();
-            }
-        });
-    }
 }

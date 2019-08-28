@@ -1,11 +1,18 @@
 package com.fellowcode.animewatcher.Anime;
 
+import android.annotation.SuppressLint;
+
+import com.fellowcode.animewatcher.Api.Link;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AnimeAdvanced extends Anime implements Serializable {
 
@@ -18,7 +25,8 @@ public class AnimeAdvanced extends Anime implements Serializable {
         String type;
     }
 
-    public String posterUrl;
+
+
     public String season;
     public String aired_on;
     public String released_on;
@@ -26,11 +34,13 @@ public class AnimeAdvanced extends Anime implements Serializable {
     public int numberOfEpisodes;
     public int countViews;
     public String rating;
+    public String studioName;
 
     public String description;
 
     ArrayList<Episode> episodes = new ArrayList<>();
     ArrayList<Genre> genres = new ArrayList<>();
+    public ArrayList<AnimeCharacter> characters = new ArrayList<>();
 
     public AnimeAdvanced(JSONObject anime) throws JSONException {
         Parse(anime);
@@ -48,13 +58,12 @@ public class AnimeAdvanced extends Anime implements Serializable {
         russian = anime.russian;
         english = anime.english;
         romaji = anime.romaji;
-
+        posterUrl = anime.posterUrl;
     }
 
     @Override
     public void Parse(JSONObject anime) throws JSONException {
         super.Parse(anime);
-        posterUrl = anime.getString("posterUrl");
         season = anime.getString("season");
         numberOfEpisodes = anime.getInt("numberOfEpisodes");
         countViews = anime.getInt("countViews");
@@ -84,19 +93,30 @@ public class AnimeAdvanced extends Anime implements Serializable {
             Genre genre = new Genre(g.getInt("id"), g.getString("title"));
             genres.add(genre);
         }
+
     }
 
     public void ParseShiki(JSONObject anime) throws JSONException{
         rating = anime.getString("rating");
-        aired_on = anime.getString("aired_on");
-        if (aired_on.equals("null"))
-            aired_on = null;
-        released_on = anime.getString("released_on");
-        if (released_on.equals("null"))
-            released_on = null;
-        next_episode_at = anime.getString("next_episode_at");
-        if (next_episode_at.equals("null"))
-            next_episode_at = null;
+        aired_on = reFormatDate(anime.getString("aired_on"));
+        released_on = reFormatDate(anime.getString("released_on"));
+        next_episode_at = reFormatDate(anime.getString("next_episode_at"));
+        studioName = anime.getJSONArray("studios").getJSONObject(0).getString("name");
+    }
+
+    public void ParseShikiCharacters(JSONArray characters) throws JSONException{
+        for (int i=0; i<characters.length(); i++){
+            JSONObject obj = characters.getJSONObject(i);
+            if (!obj.isNull("character")) {
+                JSONObject character = obj.getJSONObject("character");
+                AnimeCharacter ch = new AnimeCharacter();
+                ch.id = character.getInt("id");
+                ch.name = character.getString("name");
+                ch.russian = character.getString("russian");
+                ch.image = Link.shikiUrl + character.getJSONObject("image").getString("preview");
+                this.characters.add(ch);
+            }
+        }
     }
 
     public String getGenres(){
@@ -109,6 +129,7 @@ public class AnimeAdvanced extends Anime implements Serializable {
         return g.toString();
     }
 
+    @SuppressLint("DefaultLocale")
     public String getFullType(){
         int epCount = episodes.size();
         if (epCount < numberOfEpisodes)
@@ -116,6 +137,17 @@ public class AnimeAdvanced extends Anime implements Serializable {
         if (numberOfEpisodes != 0)
             return String.format("(%d эп.)", numberOfEpisodes);
         return "";
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private String reFormatDate(String date){
+        try {
+            Date tmp_date = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+            return new SimpleDateFormat("dd.MM.yyyy").format(tmp_date);
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

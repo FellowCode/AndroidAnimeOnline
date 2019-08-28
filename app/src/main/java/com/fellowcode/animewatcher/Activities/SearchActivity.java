@@ -3,66 +3,55 @@ package com.fellowcode.animewatcher.Activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
+import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
+import com.fellowcode.animewatcher.Anime.AnimeList;
+import com.fellowcode.animewatcher.Anime.AnimeListRequest;
 import com.fellowcode.animewatcher.Api.Api;
+import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
-import com.fellowcode.animewatcher.Utils.PagerAdapter;
-import com.mancj.materialsearchbar.MaterialSearchBar;
 
-public class MainActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
-    private MaterialSearchBar searchBar;
-
-    boolean isSearch = false;
-
-    public Api api;
-
-    LinearLayout profileBtn, favoritesBtn, searchBtn, filterBtn;
+    RecyclerView recyclerView;
 
     Toolbar toolbar;
 
-    public ViewPager viewPager;
-    TabLayout tabLayout;
+    AnimeList animeList;
+
+    Api api;
 
     SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Log.d("test", "MainActivity");
+        setContentView(R.layout.activity_search);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         api = new Api(this);
 
-        profileBtn = findViewById(R.id.profile_btn);
-        favoritesBtn = findViewById(R.id.favorites_btn);
-        searchBtn = findViewById(R.id.search_btn);
-        filterBtn = findViewById(R.id.filter_btn);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.addItemDecoration(new AnimeItemDecoration(25));
 
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.app_name);
-        setSupportActionBar(toolbar);
+        animeList = new AnimeList(this, api, recyclerView);
 
-
-        // Получаем ViewPager и устанавливаем в него адаптер
-        viewPager = findViewById(R.id.viewpager);
-        // Передаём ViewPager в TabLayout
-        tabLayout = findViewById(R.id.sliding_tabs);
-        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), this));
-        tabLayout.setupWithViewPager(viewPager);
+        doSearch(getIntent().getStringExtra("query"));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,9 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 /*if( ! searchView.isIconified()) {
                     searchView.setIconified(true);
                 }*/
-                Search(query);
                 searchItem.collapseActionView();
-                searchView.setQuery("", false);
+                doSearch(query);
                 return false;
             }
             @Override
@@ -94,23 +82,27 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    void Search(String query){
-        Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra("query", query);
-        startActivity(intent);
-        Log.d("test", "aasd");
-    }
+    void doSearch(final String query){
+        animeList.clear();
+        animeList.setRequest(new AnimeListRequest() {
+            @Override
+            public Link getUrl() {
+                Log.d("request", "ReqSearch");
+                return new Link().animes().addField("query", query).offset(animeList.size());
+            }
 
-    public void searchBtnClick(View v){
-        Log.d("test", "searchBtnClick");
-        searchView.setIconified(!searchView.isIconified());
-        Search("aa");
+            @Override
+            public void onResponse(String response) {
+                Log.d("response", response);
+            }
+        }).loadAnimes();
+        Log.d("test", "search");
+        setTitle(String.format("%s: %s", getString(R.string.search), query));
     }
 
     public void filterBtnClick(View v){
         Intent intent = new Intent(this, FilterActivity.class);
         startActivity(intent);
     }
-
 
 }

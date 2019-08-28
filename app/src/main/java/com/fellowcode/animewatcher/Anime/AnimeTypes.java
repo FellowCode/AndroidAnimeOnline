@@ -24,6 +24,7 @@ public class AnimeTypes {
         types.add( new Type("ona","ONA", R.drawable.card_span_ona));
         types.add(new Type("movie", "Фильм", R.drawable.card_span_movie));
         types.add( new Type("special","Special", R.drawable.card_span_special));
+        types.add( new Type("music","Music", R.drawable.card_span_special));
     }
 
     Type get(String key){

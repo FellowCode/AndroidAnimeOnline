@@ -57,7 +57,6 @@ public class PageFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.addItemDecoration(new AnimeItemDecoration(25));
-        recyclerScrollSetup();
 
         animeList = new AnimeList().setContext(context).setApi(api).setRecyclerView(recyclerView);
         if (mPage == Page.ONGOINGS) {
@@ -72,26 +71,12 @@ public class PageFragment extends Fragment {
 
         return view;
     }
-
-    void recyclerScrollSetup(){
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                GridLayoutManager layoutManager = ((GridLayoutManager)recyclerView.getLayoutManager());
-                assert layoutManager != null;
-                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                if (lastVisibleItemPosition > (animeList.size() - ANIMES_ON_LIMIT * 0.5))
-                    animeList.loadAnimes();
-            }
-        });
-    }
     void SetupOngoingsList(){
         animeList.setRequest(new AnimeListRequest() {
             @Override
             public Link getUrl() {
                 Log.d("request", "ReqOngoingsList");
-                return new Link().animes(animeList.size()).addField("isAiring", 1);
+                return new Link().animes().addField("isAiring", 1).offset(animeList.size());
             }
 
             @Override
@@ -108,7 +93,7 @@ public class PageFragment extends Fragment {
             @Override
             public Link getUrl() {
                 Log.d("request", "ReqAllAnimes");
-                return new Link().animes(animeList.size());
+                return new Link().animes().offset(animeList.size());
             }
 
             @Override

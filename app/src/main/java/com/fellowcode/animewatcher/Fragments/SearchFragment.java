@@ -54,7 +54,7 @@ public class SearchFragment extends Fragment {
             @Override
             public Link getUrl() {
                 Log.d("request", "ReqSearch");
-                return new Link().animes(animeList.size()).addField("query", query);
+                return new Link().animes().addField("query", query).offset(animeList.size());
             }
 
             @Override

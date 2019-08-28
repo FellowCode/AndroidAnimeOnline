@@ -18,6 +18,7 @@ public class Link {
     }
 
     private String link = "https://smotret-anime-365.ru/";
+    public static String shikiUrl = "https://shikimori.one/";
     private String api = "api/";
     private String url;
 
@@ -40,14 +41,15 @@ public class Link {
         return this;
     }
 
-    public Link animes(int offset) {
+    public Link animes() {
         url = "series";
-        if (!animes) {
-            addField("fields", "id,myAnimeListId,isActive,isAiring,myAnimeListScore,year,type,typeTitle,titles,posterUrlSmall");
-            addField("limit", 20);
-            addField("isHentai", 0);
-        }
-        animes = true;
+        addField("fields", "id,myAnimeListId,isActive,isAiring,myAnimeListScore,year,type,typeTitle,titles,posterUrlSmall,posterUrl");
+        addField("limit", 20);
+        addField("isHentai", 0);
+        return this;
+    }
+
+    public Link offset(int offset){
         addUniqueField("offset", offset);
         return this;
     }
@@ -57,6 +59,12 @@ public class Link {
             url = "animes/"+id;
         else
             url = "series/"+id;
+        return this;
+    }
+
+    public Link roles(int shikiId){
+        anime(shikiId);
+        url += "/roles";
         return this;
     }
 

@@ -1,7 +1,12 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
@@ -13,12 +18,21 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.fellowcode.animewatcher.Anime.Anime;
+import com.fellowcode.animewatcher.Anime.AnimeAdapter;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
+import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
+import com.fellowcode.animewatcher.Anime.AnimeRatings;
+import com.fellowcode.animewatcher.Anime.CharacterAdapter;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,8 +47,12 @@ public class AnimeActivity extends AppCompatActivity {
 
     ImageView poster;
 
-    TextView title, title_romaji, genres, type, season, score, rating, description, next_episode, aired_on, released_on;
+    TextView title, title_romaji, genres, type, score, rating, description, next_episode, aired_on, released_on, studio;
     LinearLayout nextep_layout, released_layout;
+
+    View loader;
+
+    RecyclerView charactersView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +64,6 @@ public class AnimeActivity extends AppCompatActivity {
         title_romaji = findViewById(R.id.title_romaji);
         genres = findViewById(R.id.genres);
         type = findViewById(R.id.type);
-        season = findViewById(R.id.season);
         score = findViewById(R.id.score);
         rating = findViewById(R.id.rating);
         description = findViewById(R.id.description);
@@ -55,7 +72,11 @@ public class AnimeActivity extends AppCompatActivity {
         released_on = findViewById(R.id.released_on);
         nextep_layout = findViewById(R.id.nextep_layout);
         released_layout = findViewById(R.id.released_layout);
+        studio = findViewById(R.id.studio);
+        loader = findViewById(R.id.loader);
 
+        charactersView = findViewById(R.id.charactersView);
+        charactersView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
@@ -66,6 +87,7 @@ public class AnimeActivity extends AppCompatActivity {
         anime = new AnimeAdvanced(a);
         getAnimeRequest(anime.id);
         getAnimeFromShikiReq(anime.shikiId);
+        getAnimeCharacters(anime.shikiId);
         UpdateFields();
         UpdateFiledsShiki();
     }
@@ -85,6 +107,7 @@ public class AnimeActivity extends AppCompatActivity {
             }
         };
         Link link = new Link().anime(id);
+        Log.d("link", link.get());
         api.Request(link.get(), respListener);
     }
 
@@ -103,13 +126,48 @@ public class AnimeActivity extends AppCompatActivity {
             }
         };
         Link link = new Link().shiki().anime(id);
+        Log.d("link", link.get());
         api.Request(link.get(), respListener);
     }
 
+    void getAnimeCharacters(int id){
+        Log.d("request", "getAnimeCharacters");
+        Response.Listener<String> respListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("response", response);
+                try {
+                    anime.ParseShikiCharacters(new JSONArray(response));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                CharacterAdapter adapter = new CharacterAdapter(anime.characters);
+                charactersView.setAdapter(adapter);
+            }
+        };
+        Link link = new Link().shiki().roles(id);
+        Log.d("link", link.get());
+        api.Request(link.get(), respListener);
+    }
+
+
     void UpdateFields() {
-        if (anime.posterUrl == null)
-            Glide.with(this).load(anime.posterUrlSmall).centerCrop().into(poster);
-        Glide.with(this).load(anime.posterUrl).centerCrop().into(poster);
+        Glide.with(this)
+                .load(anime.posterUrl)
+                .centerCrop()
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        loader.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(poster);
         title.setText(anime.russian);
         title_romaji.setText(anime.romaji);
         genres.setText(Html.fromHtml(
@@ -118,13 +176,12 @@ public class AnimeActivity extends AppCompatActivity {
             type.setText(anime.typeTitle + " " + anime.getFullType());
         else
             type.setText(anime.typeTitle);
-        season.setText(anime.season);
         score.setText(anime.myAnimeListScore);
         description.setText(anime.description);
     }
 
     void UpdateFiledsShiki() {
-        rating.setText(anime.rating);
+        rating.setText(AnimeRatings.getTitle(anime.rating));
         aired_on.setText(anime.aired_on);
 
         if (anime.next_episode_at != null) {
@@ -138,5 +195,7 @@ public class AnimeActivity extends AppCompatActivity {
             released_layout.setVisibility(View.VISIBLE);
         }else
             released_layout.setVisibility(View.GONE);
+
+        studio.setText(anime.studioName);
     }
 }

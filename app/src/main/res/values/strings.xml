@@ -31,4 +31,7 @@
     <string name="aired_on">Aired on:</string>
     <string name="released_on">Released on:</string>
     <string name="next_episode">Next episode:</string>
+    <string name="watch_online">Watch online</string>
+    <string name="studio">Studio</string>
+    <string name="studio_colon">Studio:</string>
 </resources>

@@ -39,4 +39,10 @@
         <item name="android:paddingStart">5dp</item>
     </style>
 
+    <style name="SearchToolBar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:editTextColor">@color/toolbarText</item>
+        <item name="android:textColorHint">@color/searchHint</item>
+        <item name="android:tint">@color/toolbarText</item>
+    </style>
+
 </resources>
