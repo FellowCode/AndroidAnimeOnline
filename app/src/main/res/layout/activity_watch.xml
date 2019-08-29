@@ -8,6 +8,14 @@
     <com.fellowcode.animewatcher.Utils.VideoFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/video_loader"
+            style="@style/SpinKitView.ThreeBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/colorAccent" />
         <com.fellowcode.animewatcher.Utils.VideoWebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -22,7 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/ChangeEpisodeBtns"
-            android:src="@drawable/ic_left_double"/>
+            android:src="@drawable/ic_left_double"
+            android:onClick="decEpisodeClick"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/ChangeEpisodeBtns"
-            android:src="@drawable/ic_right_double"/>
+            android:src="@drawable/ic_right_double"
+            android:onClick="incEpisodeClick"/>
     </LinearLayout>
     <android.support.design.widget.TabLayout
         android:layout_marginTop="10dp"

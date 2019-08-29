@@ -5,8 +5,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 
 import com.android.volley.Response;
@@ -34,6 +36,7 @@ public class WatchActivity extends AppCompatActivity {
     public AnimeAdvanced anime;
 
     public Episode currentEpisode;
+    int episodeIndex = 0;
     EditText episodeEdit;
 
     @Override
@@ -44,6 +47,11 @@ public class WatchActivity extends AppCompatActivity {
         NavButtons navButtons = new NavButtons(this);
 
         webView = findViewById(R.id.webView);
+        webView.setWebViewClient(new WebViewClient(){
+            public void onPageFinished(WebView view, String url) {
+                webView.setVisibility(View.VISIBLE);
+            }
+        });
         episodeEdit = findViewById(R.id.episode);
 
         // Получаем ViewPager и устанавливаем в него адаптер
@@ -57,7 +65,7 @@ public class WatchActivity extends AppCompatActivity {
 
         anime = (AnimeAdvanced)getIntent().getSerializableExtra("anime");
 
-        currentEpisode = anime.episodes.get(0);
+        currentEpisode = anime.episodes.get(episodeIndex);
         loadTranslations(currentEpisode.id);
         episodeEdit.setText(currentEpisode.episodeInt);
     }
@@ -65,7 +73,9 @@ public class WatchActivity extends AppCompatActivity {
     public void setupVideo(String embedUrl) {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setUserAgentString("Anime online");
+
+        //webSettings.setUserAgentString("Anime online");
+        webView.setVisibility(View.INVISIBLE);
         webView.loadUrl(embedUrl);
     }
 
@@ -90,6 +100,28 @@ public class WatchActivity extends AppCompatActivity {
     void setupTabLayout(){
         viewPager.setAdapter(new TranslationsPagerAdapter(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public void decEpisodeClick(View v){
+        if (episodeIndex >0) {
+            episodeIndex--;
+            currentEpisode = anime.episodes.get(episodeIndex);
+            changeEpisode();
+        }
+    }
+
+    public void incEpisodeClick(View v){
+        if (episodeIndex < anime.episodes.size()) {
+            episodeIndex++;
+            currentEpisode = anime.episodes.get(episodeIndex);
+            changeEpisode();
+        }
+    }
+
+    public void changeEpisode(){
+        episodeEdit.setText(currentEpisode.episodeInt);
+        loadTranslations(currentEpisode.id);
+        webView.setVisibility(View.INVISIBLE);
     }
 
 }
