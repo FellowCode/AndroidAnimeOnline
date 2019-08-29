@@ -40,4 +40,7 @@
     <string name="sub">Sub</string>
     <string name="raw">RAW</string>
     <string name="load_error">Load error. Try again…</string>
+    <string name="episode_not_found">Episode not found</string>
+    <string name="episode_not_selected">Episode not selected</string>
+    <string name="translation_not_selected">Translation not selected</string>
 </resources>

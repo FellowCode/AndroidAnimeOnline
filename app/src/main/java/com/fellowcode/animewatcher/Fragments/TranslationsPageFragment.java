@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.fellowcode.animewatcher.Activities.MainActivity;
 import com.fellowcode.animewatcher.Activities.WatchActivity;
-import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
-import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
-import com.fellowcode.animewatcher.Anime.AnimeList;
 import com.fellowcode.animewatcher.Anime.Episode;
 import com.fellowcode.animewatcher.Anime.Translation;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.R;
-import com.fellowcode.animewatcher.Utils.Page;
 import com.fellowcode.animewatcher.Utils.TranslationsPage;
 
 import java.util.ArrayList;
@@ -37,6 +31,7 @@ public class TranslationsPageFragment extends Fragment {
 
     ListView listView;
 
+    WatchActivity watchActivity;
     ArrayList<Translation> tr = new ArrayList<>();
 
     public static TranslationsPageFragment newInstance(int page){
@@ -53,8 +48,10 @@ public class TranslationsPageFragment extends Fragment {
         if (getArguments() != null) {
             mPage = getArguments().getInt(ARG_PAGE);
         }
+        watchActivity = (WatchActivity) Objects.requireNonNull(getActivity());
+        watchActivity.tabs.add(this);
 
-        api = ((WatchActivity) Objects.requireNonNull(getActivity())).api;
+        api = watchActivity.api;
 
     }
 
@@ -62,8 +59,6 @@ public class TranslationsPageFragment extends Fragment {
                                        Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_page_translations, container, false);
         listView = view.findViewById(R.id.listView);
-
-        final WatchActivity watchActivity = (WatchActivity) Objects.requireNonNull(getActivity());
 
         Episode episode = watchActivity.currentEpisode;
 
@@ -87,10 +82,18 @@ public class TranslationsPageFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 watchActivity.setupVideo(tr.get(position).embedUrl);
+                watchActivity.clearSelectTranslation();
+                listView.getChildAt(position).setSelected(true);
             }
         });
 
         return view;
+    }
+
+    public void clearSelect(){
+        for (int i=0; i<listView.getChildCount(); i++){
+            listView.getChildAt(i).setSelected(false);
+        }
     }
 
 }

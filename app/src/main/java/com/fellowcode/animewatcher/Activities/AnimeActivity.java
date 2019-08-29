@@ -71,6 +71,7 @@ public class AnimeActivity extends AppCompatActivity {
         released_layout = findViewById(R.id.released_layout);
         studio = findViewById(R.id.studio);
         loader = findViewById(R.id.loader);
+        watchBtn = findViewById(R.id.watch_btn);
 
         charactersView = findViewById(R.id.charactersView);
         charactersView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -176,6 +177,8 @@ public class AnimeActivity extends AppCompatActivity {
             type.setText(anime.typeTitle);
         score.setText(anime.myAnimeListScore);
         description.setText(anime.description);
+        if (anime.episodes.size()>0)
+            watchBtn.setVisibility(View.VISIBLE);
     }
 
     void UpdateFiledsShiki() {

@@ -10,16 +10,24 @@
         android:layout_height="match_parent">
         <com.github.ybq.android.spinkit.SpinKitView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/video_loader"
+            android:id="@+id/video_progress"
             style="@style/SpinKitView.ThreeBounce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:SpinKit_Color="@color/colorAccent" />
+            app:SpinKit_Color="@color/colorAccent"
+            android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/video_notify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/translation_not_selected"/>
         <com.fellowcode.animewatcher.Utils.VideoWebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/webView"/>
+            android:id="@+id/webView"
+            android:visibility="invisible"/>
     </com.fellowcode.animewatcher.Utils.VideoFrameLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -52,7 +60,8 @@
             android:digits="0123456789"
             android:maxLength="4"
             android:paddingStart="5dp"
-            android:paddingEnd="5dp"/>
+            android:paddingEnd="5dp"
+            android:imeOptions="actionDone"/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
