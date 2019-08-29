@@ -34,4 +34,10 @@
     <string name="watch_online">Watch online</string>
     <string name="studio">Studio</string>
     <string name="studio_colon">Studio:</string>
+    <string name="home">Home</string>
+    <string name="episode">Episode</string>
+    <string name="voice">Voice</string>
+    <string name="sub">Sub</string>
+    <string name="raw">RAW</string>
+    <string name="load_error">Load error. Try again…</string>
 </resources>

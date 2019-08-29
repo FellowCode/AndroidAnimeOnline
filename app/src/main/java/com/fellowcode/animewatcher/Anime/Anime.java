@@ -22,7 +22,7 @@ public class Anime implements Serializable {
     public String posterUrl;
 
     public Anime(JSONObject anime) throws JSONException {
-        Parse(anime);
+        ParseSmAnime(anime);
     }
 
     public Anime() {
@@ -61,7 +61,7 @@ public class Anime implements Serializable {
             romaji = titles.getString("romaji");
     }
 
-    public void Parse(JSONObject anime) throws JSONException {
+    public void ParseSmAnime(JSONObject anime) throws JSONException {
         id = anime.getInt("id");
         shikiId = anime.getInt("myAnimeListId");
         isActive = anime.getInt("isActive");

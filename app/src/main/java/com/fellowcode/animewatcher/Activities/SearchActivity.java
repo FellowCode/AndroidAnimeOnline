@@ -1,10 +1,6 @@
 package com.fellowcode.animewatcher.Activities;
 
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +18,7 @@ import com.fellowcode.animewatcher.Anime.AnimeListRequest;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.Utils.NavButtons;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -34,6 +31,9 @@ public class SearchActivity extends AppCompatActivity {
     Api api;
 
     SearchView searchView;
+    MenuItem searchItem;
+
+    boolean newSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,20 @@ public class SearchActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        NavButtons navBtns = new NavButtons(this);
+        navBtns.setOnClick(NavButtons.SEARCH, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!searchItem.isActionViewExpanded()) {
+                    searchItem.expandActionView();
+                    searchView.requestFocusFromTouch();
+                } else {
+                    searchView.clearFocus();
+                }
+            }
+        });
+        navBtns.select(NavButtons.SEARCH);
+
         api = new Api(this);
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -51,14 +65,17 @@ public class SearchActivity extends AppCompatActivity {
 
         animeList = new AnimeList(this, api, recyclerView);
 
-        doSearch(getIntent().getStringExtra("query"));
+        if (getIntent().getStringExtra("query") != null)
+            doSearch(getIntent().getStringExtra("query"));
+        else
+            newSearch = true;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
 
         searchView = (SearchView) searchItem.getActionView();
 
@@ -79,6 +96,13 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        if (newSearch) {
+            searchItem.expandActionView();
+            searchView.requestFocusFromTouch();
+        }
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -98,11 +122,6 @@ public class SearchActivity extends AppCompatActivity {
         }).loadAnimes();
         Log.d("test", "search");
         setTitle(String.format("%s: %s", getString(R.string.search), query));
-    }
-
-    public void filterBtnClick(View v){
-        Intent intent = new Intent(this, FilterActivity.class);
-        startActivity(intent);
     }
 
 }

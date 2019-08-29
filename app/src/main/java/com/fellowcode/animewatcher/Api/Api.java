@@ -4,6 +4,7 @@ package com.fellowcode.animewatcher.Api;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -13,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.fellowcode.animewatcher.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,18 +26,22 @@ import java.util.Map;
 public class Api implements Serializable {
 
     RequestQueue queue;
+    Context context;
 
     public Api(Context context) {
         queue = Volley.newRequestQueue(context);
+        this.context = context;
     }
 
-    public void Request(String url, Response.Listener<String> respList) {
+    public void Request(final String url, final Response.Listener<String> respList) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 respList,
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("req-error", error.toString());
+                        Toast.makeText(context, R.string.load_error, Toast.LENGTH_SHORT).show();
+                        Request(url, respList);
                     }
                 }){
             @Override

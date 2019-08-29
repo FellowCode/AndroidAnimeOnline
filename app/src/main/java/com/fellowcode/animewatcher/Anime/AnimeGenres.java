@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class AnimeGenres {
 
-    private ArrayList<Genre> genres = new ArrayList<>();
+    private static ArrayList<Genre> genres = new ArrayList<>();
     
     public AnimeGenres(){
         genres.add(new Genre("5", "Безумие"));

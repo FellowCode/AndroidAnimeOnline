@@ -16,9 +16,8 @@
         android:background="?backgroundColor"
         android:baselineAligned="false"
         android:orientation="horizontal">
-
         <LinearLayout
-            android:id="@+id/profile_btn"
+            android:id="@+id/home_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -26,19 +25,19 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp">
+            android:paddingTop="2dp"
+            android:onClick="homeBtnClick">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:src="@drawable/ic_person"
+                android:src="@drawable/ic_home"
                 android:tint="?attr/iconColor" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/profile"
+                android:text="@string/home"
                 android:textAlignment="center"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -52,8 +51,8 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp">
+            android:paddingTop="2dp"
+            android:onClick="favoritesBtnClick">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -79,8 +78,7 @@
             android:focusable="true"
             android:onClick="searchBtnClick"
             android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp">
+            android:paddingTop="2dp">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -105,8 +103,7 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="2dp"
             android:onClick="filterBtnClick">
 
             <ImageView

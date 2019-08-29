@@ -1,12 +1,11 @@
-package com.fellowcode.animewatcher.Fragments;
+package com.fellowcode.animewatcher.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,14 +17,13 @@ import android.widget.TextView;
 import com.fellowcode.animewatcher.Anime.AnimeGenres;
 import com.fellowcode.animewatcher.Anime.AnimeTypes;
 import com.fellowcode.animewatcher.Api.Link;
-import com.fellowcode.animewatcher.Activities.FilterActivity;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.Utils.NavButtons;
 import com.fellowcode.animewatcher.Utils.WrapContentListView;
 
 import java.util.Calendar;
-import java.util.Objects;
 
-public class FiltersFragment extends Fragment {
+public class FiltersListActivity extends AppCompatActivity {
 
     LinearLayout genresBtn, typesBtn;
     WrapContentListView genresList, typesList;
@@ -43,18 +41,27 @@ public class FiltersFragment extends Fragment {
     CheckBox ongoing;
     Button applyBtn;
 
-    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                                       Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_filters, container, false);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_filters_list);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle(R.string.filter);
+
+        NavButtons navButtons = new NavButtons(this);
+        navButtons.select(NavButtons.FILTER);
 
         genresIsOpen = false;
         typesIsOpen = true;
 
-        genresBtn = view.findViewById(R.id.genres);
-        typesBtn = view.findViewById(R.id.types);
+        genresBtn = findViewById(R.id.genres);
+        typesBtn = findViewById(R.id.types);
 
-        genresList = view.findViewById(R.id.genresList);
-        typesList = view.findViewById(R.id.typesList);
+        genresList = findViewById(R.id.genresList);
+        typesList = findViewById(R.id.typesList);
 
         genresBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,12 +80,12 @@ public class FiltersFragment extends Fragment {
             }
         });
 
-        ArrayAdapter<String> genresAdapter = new ArrayAdapter<>(getContext(),
+        ArrayAdapter<String> genresAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice,
                 genres.getNames());
         genresList.setAdapter(genresAdapter);
 
-        genres_op = view.findViewById(R.id.genres_op);
+        genres_op = findViewById(R.id.genres_op);
         genres_op.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,18 +97,18 @@ public class FiltersFragment extends Fragment {
             }
         });
 
-        ArrayAdapter<String> typesAdapter = new ArrayAdapter<>(getContext(),
+        ArrayAdapter<String> typesAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice,
                 types.getNames());
         typesList.setAdapter(typesAdapter);
 
-        year_from = view.findViewById(R.id.year_from);
-        year_to = view.findViewById(R.id.year_to);
-        rating_from = view.findViewById(R.id.rating_from);
-        rating_to = view.findViewById(R.id.rating_to);
+        year_from = findViewById(R.id.year_from);
+        year_to = findViewById(R.id.year_to);
+        rating_from = findViewById(R.id.rating_from);
+        rating_to = findViewById(R.id.rating_to);
 
-        ongoingBtn = view.findViewById(R.id.ongoingBtn);
-        ongoing = view.findViewById(R.id.ongoing);
+        ongoingBtn = findViewById(R.id.ongoingBtn);
+        ongoing = findViewById(R.id.ongoing);
 
         ongoingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +117,7 @@ public class FiltersFragment extends Fragment {
             }
         });
 
-        applyBtn = view.findViewById(R.id.apply);
+        applyBtn = findViewById(R.id.apply);
         applyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,16 +125,22 @@ public class FiltersFragment extends Fragment {
             }
         });
 
-        return view;
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        if (anyGenre)
-            genres_op.setText(R.string.any_genres);
-        else
-            genres_op.setText(R.string.all_genres);
+    public void homeBtnClick(View v){
+
+    }
+
+    public void favoritesBtnClick(View v){
+
+    }
+
+    public void searchBtnClick(View v){
+
+    }
+
+    public void filterBtnClick(View v){
+
     }
 
     String getSelectedGenres(){
@@ -193,6 +206,9 @@ public class FiltersFragment extends Fragment {
                 .addFilterField("type", getSelectedTypes())
                 .addField("isAiring", ongoing.isChecked() ? "1" : null);
 
-        ((FilterActivity) Objects.requireNonNull(getActivity())).doFilter(link);
+        Intent intent = new Intent(this, AnimeFilteredActivity.class);
+        intent.putExtra("filterLink", link);
+        startActivity(intent);
     }
+
 }

@@ -1,17 +1,17 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.text.HtmlCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,9 +23,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fellowcode.animewatcher.Anime.Anime;
-import com.fellowcode.animewatcher.Anime.AnimeAdapter;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
-import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
 import com.fellowcode.animewatcher.Anime.AnimeRatings;
 import com.fellowcode.animewatcher.Anime.CharacterAdapter;
 import com.fellowcode.animewatcher.Api.Api;
@@ -35,9 +33,6 @@ import com.fellowcode.animewatcher.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.SecureCacheResponse;
-import java.util.ArrayList;
 
 public class AnimeActivity extends AppCompatActivity {
 
@@ -53,6 +48,8 @@ public class AnimeActivity extends AppCompatActivity {
     View loader;
 
     RecyclerView charactersView;
+
+    Button watchBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +76,8 @@ public class AnimeActivity extends AppCompatActivity {
         charactersView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.app_name);
+        setSupportActionBar(toolbar);
+        setTitle(R.string.app_name);
 
         api = new Api(this);
 
@@ -99,7 +97,7 @@ public class AnimeActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Log.d("response", response);
                 try {
-                    anime.Parse(new JSONObject(response).getJSONObject("data"));
+                    anime.ParseSmAnime(new JSONObject(response).getJSONObject("data"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -170,8 +168,8 @@ public class AnimeActivity extends AppCompatActivity {
                 .into(poster);
         title.setText(anime.russian);
         title_romaji.setText(anime.romaji);
-        genres.setText(Html.fromHtml(
-                String.format("<b>%s: </b>%s", getString(R.string.genres), anime.getGenres())));
+        genres.setText(HtmlCompat.fromHtml(
+                String.format("<b>%s: </b>%s", getString(R.string.genres), anime.getGenres()), HtmlCompat.FROM_HTML_MODE_LEGACY));
         if (!anime.type.equals("movie"))
             type.setText(anime.typeTitle + " " + anime.getFullType());
         else
@@ -185,7 +183,7 @@ public class AnimeActivity extends AppCompatActivity {
         aired_on.setText(anime.aired_on);
 
         if (anime.next_episode_at != null) {
-            next_episode.setText(anime.next_episode_at.split("T")[0]);
+            next_episode.setText(anime.next_episode_at);
             nextep_layout.setVisibility(View.VISIBLE);
         }else
             nextep_layout.setVisibility(View.GONE);
@@ -197,5 +195,11 @@ public class AnimeActivity extends AppCompatActivity {
             released_layout.setVisibility(View.GONE);
 
         studio.setText(anime.studioName);
+    }
+
+    public void watchAnime(View v){
+        Intent intent = new Intent(this, WatchActivity.class);
+        intent.putExtra("anime", anime);
+        startActivity(intent);
     }
 }

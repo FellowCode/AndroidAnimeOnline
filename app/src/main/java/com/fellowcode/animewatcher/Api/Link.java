@@ -1,9 +1,10 @@
 package com.fellowcode.animewatcher.Api;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Link {
-    class Field {
+public class Link implements Serializable {
+    class Field implements Serializable{
         String key;
         String value;
 
@@ -59,6 +60,11 @@ public class Link {
             url = "animes/"+id;
         else
             url = "series/"+id;
+        return this;
+    }
+
+    public Link episode(int id){
+        url = "episodes/" + id;
         return this;
     }
 

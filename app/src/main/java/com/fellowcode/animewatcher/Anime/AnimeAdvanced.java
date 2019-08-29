@@ -16,17 +16,6 @@ import java.util.Date;
 
 public class AnimeAdvanced extends Anime implements Serializable {
 
-    class Episode implements Serializable {
-        int id;
-        int countViews;
-        String episodeFull;
-        String episodeInt;
-        String episodeTitle;
-        String type;
-    }
-
-
-
     public String season;
     public String aired_on;
     public String released_on;
@@ -38,12 +27,12 @@ public class AnimeAdvanced extends Anime implements Serializable {
 
     public String description;
 
-    ArrayList<Episode> episodes = new ArrayList<>();
+    public ArrayList<Episode> episodes = new ArrayList<>();
     ArrayList<Genre> genres = new ArrayList<>();
     public ArrayList<AnimeCharacter> characters = new ArrayList<>();
 
     public AnimeAdvanced(JSONObject anime) throws JSONException {
-        Parse(anime);
+        ParseSmAnime(anime);
     }
 
     public AnimeAdvanced(Anime anime) {
@@ -62,8 +51,8 @@ public class AnimeAdvanced extends Anime implements Serializable {
     }
 
     @Override
-    public void Parse(JSONObject anime) throws JSONException {
-        super.Parse(anime);
+    public void ParseSmAnime(JSONObject anime) throws JSONException {
+        super.ParseSmAnime(anime);
         season = anime.getString("season");
         numberOfEpisodes = anime.getInt("numberOfEpisodes");
         countViews = anime.getInt("countViews");
@@ -77,15 +66,8 @@ public class AnimeAdvanced extends Anime implements Serializable {
         }
         JSONArray episodArray = anime.getJSONArray("episodes");
         for (int i = 0; i < episodArray.length(); i++) {
-            JSONObject ep = episodArray.getJSONObject(i);
-            Episode episode = new Episode();
-            episode.id = ep.getInt("id");
-            episode.countViews = ep.getInt("countViews");
-            episode.episodeFull = ep.getString("episodeFull");
-            episode.episodeInt = ep.getString("episodeInt");
-            episode.episodeTitle = ep.getString("episodeTitle");
-            episode.type = ep.getString("episodeType");
-            episodes.add(episode);
+            JSONObject episode = episodArray.getJSONObject(i);
+            episodes.add(new Episode(episode));
         }
         JSONArray gen = anime.getJSONArray("genres");
         for (int i=0; i<gen.length(); i++){
@@ -100,7 +82,7 @@ public class AnimeAdvanced extends Anime implements Serializable {
         rating = anime.getString("rating");
         aired_on = reFormatDate(anime.getString("aired_on"));
         released_on = reFormatDate(anime.getString("released_on"));
-        next_episode_at = reFormatDate(anime.getString("next_episode_at"));
+        next_episode_at = reFormatDate(anime.getString("next_episode_at").split("T")[0]);
         studioName = anime.getJSONArray("studios").getJSONObject(0).getString("name");
     }
 
@@ -146,6 +128,14 @@ public class AnimeAdvanced extends Anime implements Serializable {
             return new SimpleDateFormat("dd.MM.yyyy").format(tmp_date);
         } catch (ParseException e){
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Episode getEpisodeById(int id){
+        for (int i=0; i<episodes.size(); i++){
+            if (episodes.get(i).id == id)
+                return episodes.get(i);
         }
         return null;
     }

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="false">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:layout_scrollFlags="scroll|snap"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextColor="?toolbarTextColor" />
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/genres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/filter_item"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/genres"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_expand"
+                        android:tint="?iconColor" />
+                </LinearLayout>
+
+                <com.fellowcode.animewatcher.Utils.WrapContentListView
+                    android:id="@+id/genresList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/filter_item_noclick"
+                    android:choiceMode="multipleChoice"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/genres_op"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/filter_item"
+                    android:paddingStart="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/any_genres"
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:id="@+id/types"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/filter_item"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/types"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_expand"
+                        android:tint="?iconColor" />
+                </LinearLayout>
+
+                <com.fellowcode.animewatcher.Utils.WrapContentListView
+                    android:id="@+id/typesList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/filter_item_noclick"
+                    android:choiceMode="multipleChoice" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/filter_item">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/year"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:paddingEnd="40dp">
+
+                        <EditText
+                            android:id="@+id/year_from"
+                            android:layout_width="65dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/filter_input"
+                            android:digits="0123456789"
+                            android:hint="@string/from"
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="0dp"
+                            android:textSize="20sp" />
+
+                        <FrameLayout
+                            android:layout_width="15dp"
+                            android:layout_height="3dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:background="?android:textColor" />
+
+                        <EditText
+                            android:id="@+id/year_to"
+                            android:layout_width="65dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/filter_input"
+                            android:digits="0123456789"
+                            android:hint="@string/to"
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="0dp"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/filter_item">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/score"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:paddingEnd="40dp">
+
+                        <EditText
+                            android:id="@+id/rating_from"
+                            android:layout_width="65dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/filter_input"
+                            android:digits="0123456789"
+                            android:hint="@string/from"
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="0dp"
+                            android:textSize="20sp" />
+
+                        <FrameLayout
+                            android:layout_width="15dp"
+                            android:layout_height="3dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:background="?android:textColor" />
+
+                        <EditText
+                            android:id="@+id/rating_to"
+                            android:layout_width="65dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/filter_input"
+                            android:digits="0123456789"
+                            android:hint="@string/to"
+                            android:inputType="number"
+                            android:maxLength="4"
+                            android:paddingStart="5dp"
+                            android:paddingEnd="0dp"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/ongoingBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/filter_item"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingEnd="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/ongoing"
+                        android:textSize="20sp" />
+
+                    <CheckBox
+                        android:id="@+id/ongoing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:clickable="false"
+                        android:focusable="false" />
+                </FrameLayout>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom">
+
+        </LinearLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+    <Button
+        android:id="@+id/apply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/watch_btn"
+        android:text="@string/apply_filters"
+        android:textColor="#FFF" />
+
+    <include layout="@layout/panel_main" />
+</LinearLayout>

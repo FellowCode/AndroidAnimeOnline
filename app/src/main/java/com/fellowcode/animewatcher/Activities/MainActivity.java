@@ -1,7 +1,5 @@
 package com.fellowcode.animewatcher.Activities;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -9,17 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.R;
-import com.fellowcode.animewatcher.Utils.PagerAdapter;
+import com.fellowcode.animewatcher.Utils.NavButtons;
+import com.fellowcode.animewatcher.Utils.MainPagerAdapter;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     public Api api;
 
-    LinearLayout profileBtn, favoritesBtn, searchBtn, filterBtn;
+
 
     Toolbar toolbar;
 
@@ -38,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
 
     SearchView searchView;
+    MenuItem searchItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +45,20 @@ public class MainActivity extends AppCompatActivity {
 
         api = new Api(this);
 
-        profileBtn = findViewById(R.id.profile_btn);
-        favoritesBtn = findViewById(R.id.favorites_btn);
-        searchBtn = findViewById(R.id.search_btn);
-        filterBtn = findViewById(R.id.filter_btn);
+        NavButtons navBtns = new NavButtons(this);
+        navBtns.setOnClick(NavButtons.SEARCH, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!searchItem.isActionViewExpanded()) {
+                    searchItem.expandActionView();
+                    searchView.requestFocusFromTouch();
+                } else {
+                    searchView.clearFocus();
+                }
+            }
+        });
+        navBtns.select(NavButtons.HOME);
+
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
@@ -61,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewpager);
         // Передаём ViewPager в TabLayout
         tabLayout = findViewById(R.id.sliding_tabs);
-        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), this));
+        viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -69,17 +77,13 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
 
         searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Toast like print
-                /*if( ! searchView.isIconified()) {
-                    searchView.setIconified(true);
-                }*/
                 Search(query);
                 searchItem.collapseActionView();
                 searchView.setQuery("", false);
@@ -89,6 +93,15 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String s) {
                 // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
                 return false;
+            }
+        });
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    searchItem.collapseActionView();
+                    searchView.setQuery("", false);
+                }
             }
         });
         return super.onCreateOptionsMenu(menu);
@@ -101,16 +114,14 @@ public class MainActivity extends AppCompatActivity {
         Log.d("test", "aasd");
     }
 
-    public void searchBtnClick(View v){
-        Log.d("test", "searchBtnClick");
-        searchView.setIconified(!searchView.isIconified());
-        Search("aa");
+    public void homeBtnClick(View v){
+
     }
 
-    public void filterBtnClick(View v){
-        Intent intent = new Intent(this, FilterActivity.class);
-        startActivity(intent);
+    public void favoritesBtnClick(View v){
+
     }
+
 
 
 }

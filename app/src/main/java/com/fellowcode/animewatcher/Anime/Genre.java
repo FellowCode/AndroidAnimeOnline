@@ -1,6 +1,8 @@
 package com.fellowcode.animewatcher.Anime;
 
-class Genre {
+import java.io.Serializable;
+
+class Genre implements Serializable {
     int id;
     String title;
 

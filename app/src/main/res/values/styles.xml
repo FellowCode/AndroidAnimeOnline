@@ -45,4 +45,12 @@
         <item name="android:tint">@color/toolbarText</item>
     </style>
 
+    <style name="ChangeEpisodeBtns">
+        <item name="android:background">@drawable/watch_btn</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
 </resources>

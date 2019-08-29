@@ -85,6 +85,10 @@ public class AnimeList implements Serializable {
         });
     }
 
+    private void RequestShiki(){
+
+    }
+
     public void loadAnimes() {
         if (!currReq && !endOfList)
             Request();
@@ -95,7 +99,6 @@ public class AnimeList implements Serializable {
             JSONArray array = new JSONObject(response).getJSONArray("data");
             ArrayList<Anime> animeList = new ArrayList<>();
             for (int i = 0; i < array.length(); i++) {
-                //"id, isActive, isAiring, myAnimeListScore, year, typeTitle, titles, posterUrlSmall"
                 JSONObject obj = array.getJSONObject(i);
                 Anime anime = new Anime(obj);
                 animeList.add(anime);

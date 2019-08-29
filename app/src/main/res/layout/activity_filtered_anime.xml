@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:elevation="4dp"
-                android:theme="@style/SearchToolBar"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:titleTextColor="?toolbarTextColor" />
@@ -34,11 +33,10 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?recyclerBg"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:background="?recyclerBg"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <include layout="@layout/panel_main" />
+    <include layout="@layout/panel_main"/>
 </LinearLayout>

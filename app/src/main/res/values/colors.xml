@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="selectIcon">#E64E4E</color>
+
     <color name="colorPrimary">#4A2A80</color>
     <color name="colorPrimaryDark">#2E1058</color>
     <color name="colorAccent">#1C91B4</color>

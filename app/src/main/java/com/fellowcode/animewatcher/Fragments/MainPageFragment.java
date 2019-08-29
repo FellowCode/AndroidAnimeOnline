@@ -22,22 +22,20 @@ import com.fellowcode.animewatcher.Utils.Page;
 
 import java.util.Objects;
 
-public class PageFragment extends Fragment {
+public class MainPageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private int mPage;
     AnimeList animeList;
 
-    private int ANIMES_ON_LIMIT = 20;
-
     RecyclerView recyclerView;
     Api api;
     Context context;
 
-    public static PageFragment newInstance(int page){
+    public static MainPageFragment newInstance(int page){
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
-        PageFragment fragment = new PageFragment();
+        MainPageFragment fragment = new MainPageFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +51,7 @@ public class PageFragment extends Fragment {
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_page_main, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.addItemDecoration(new AnimeItemDecoration(25));
