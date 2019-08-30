@@ -31,10 +31,15 @@ public class Translation implements Serializable {
         typeKind = translation.getString("typeKind");
         typeLang = translation.getString("typeLang");
         authorsSummary = translation.getString("authorsSummary");
+        if (authorsSummary.length() == 0)
+            authorsSummary = "Неизвестный";
         embedUrl = translation.getString("embedUrl");
     }
 
     public String getSummary(){
-        return String.format("%s - %s (%sp)", authorsSummary, qualityType, height);
+        if (height > 0)
+            return String.format("%s - %s (%sp)", authorsSummary, qualityType.toUpperCase(), height);
+        else
+            return String.format("%s - %s", authorsSummary, qualityType.toUpperCase());
     }
 }

@@ -25,7 +25,7 @@ public class Link implements Serializable {
 
     private boolean animes = false;
 
-    private boolean isShiki = false;
+    public boolean isShiki = false;
 
 
     private ArrayList<Field> fields;
@@ -43,15 +43,22 @@ public class Link implements Serializable {
     }
 
     public Link animes() {
-        url = "series";
-        addField("fields", "id,myAnimeListId,isActive,isAiring,myAnimeListScore,year,type,typeTitle,titles,posterUrlSmall,posterUrl");
+        if (isShiki)
+            url = "animes";
+        else {
+            url = "series";
+            addField("fields", "id,myAnimeListId,isActive,isAiring,myAnimeListScore,year,type,typeTitle,titles,posterUrlSmall,posterUrl");
+            addField("isHentai", 0);
+        }
         addField("limit", 20);
-        addField("isHentai", 0);
         return this;
     }
 
     public Link offset(int offset){
-        addUniqueField("offset", offset);
+        if (isShiki){
+            addUniqueField("page", offset/20+1);
+        } else
+            addUniqueField("offset", offset);
         return this;
     }
 
@@ -60,6 +67,12 @@ public class Link implements Serializable {
             url = "animes/"+id;
         else
             url = "series/"+id;
+        return this;
+    }
+
+    public Link animeByShikiId(int shikiId){
+        url = "series";
+        addField("myAnimeListId", shikiId);
         return this;
     }
 
@@ -82,6 +95,17 @@ public class Link implements Serializable {
 
     public Link addField(String key, int value) {
         fields.add(new Field(key, String.valueOf(value)));
+        return this;
+    }
+
+    public Link addField(String key, ArrayList<Integer> values){
+        StringBuilder builder = new StringBuilder();
+        for (int i=0; i<values.size();i++){
+            builder.append(values.get(i));
+            if (i<values.size()-1)
+                builder.append(',');
+        }
+        addField(key, builder.toString());
         return this;
     }
 

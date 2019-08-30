@@ -24,6 +24,9 @@ public class SearchActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
+    View listEmpty;
+    View progressBar;
+
     Toolbar toolbar;
 
     AnimeList animeList;
@@ -43,7 +46,10 @@ public class SearchActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        listEmpty = findViewById(R.id.list_empty);
+
         NavButtons navBtns = new NavButtons(this);
+        navBtns.select(NavButtons.SEARCH); // this func disabled onclick
         navBtns.setOnClick(NavButtons.SEARCH, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +61,6 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-        navBtns.select(NavButtons.SEARCH);
 
         api = new Api(this);
 
@@ -108,6 +113,7 @@ public class SearchActivity extends AppCompatActivity {
 
     void doSearch(final String query){
         animeList.clear();
+        progressBar.setVisibility(View.VISIBLE);
         animeList.setRequest(new AnimeListRequest() {
             @Override
             public Link getUrl() {
@@ -117,7 +123,13 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
+
                 Log.d("response", response);
+                if (animeList.size() == 0)
+                    listEmpty.setVisibility(View.VISIBLE);
+                else
+                    listEmpty.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }).loadAnimes();
         Log.d("test", "search");

@@ -1,5 +1,8 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,7 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,12 +25,16 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
 import com.fellowcode.animewatcher.Anime.Episode;
+import com.fellowcode.animewatcher.Anime.Favorites;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.Fragments.TranslationsPageFragment;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.Utils.NavButtons;
+import com.fellowcode.animewatcher.Utils.Serialize;
 import com.fellowcode.animewatcher.Utils.TranslationsPagerAdapter;
+import com.fellowcode.animewatcher.Utils.VideoEnabledWebChromeClient;
+import com.fellowcode.animewatcher.Utils.VideoEnabledWebView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,9 +50,13 @@ import java.util.Map;
 
 public class WatchActivity extends AppCompatActivity {
 
-    WebView webView;
+    VideoEnabledWebView webView;
+    VideoEnabledWebChromeClient webChromeClient;
+    WebView webCheckLogin;
+    View authBtn;
     TextView videoNotify;
     View videoProgressBar;
+    View episodeControls;
 
     public Api api;
 
@@ -57,25 +71,36 @@ public class WatchActivity extends AppCompatActivity {
 
     public ArrayList<TranslationsPageFragment> tabs = new ArrayList<>();
 
-    String embedUrlForParse;
-
+    Favorites favorites;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch);
+        authBtn = findViewById(R.id.auth_btn);
+
+        webCheckLogin = findViewById(R.id.webCheckLogin);
+        webCheckLogin.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url){
+                Log.d("test", url);
+                if (!url.equals("https://smotret-anime-365.ru/users/profile"))
+                    authBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        webCheckLogin.loadUrl("https://smotret-anime-365.ru/users/login");
 
         NavButtons navButtons = new NavButtons(this);
 
-        webView = findViewById(R.id.webView);
-        webView.setWebViewClient(new WebViewClient(){
-            public void onPageFinished(WebView view, String url) {
-                webView.setVisibility(View.VISIBLE);
-            }
-        });
+        episodeControls = findViewById(R.id.episodeControls);
+
+
+        setupWebView();
+
         videoNotify = findViewById(R.id.video_notify);
         videoProgressBar = findViewById(R.id.video_progress);
 
+        //Setup episode controls
         episodeEdit = findViewById(R.id.episode);
         episodeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -106,120 +131,100 @@ public class WatchActivity extends AppCompatActivity {
 
         anime = (AnimeAdvanced)getIntent().getSerializableExtra("anime");
 
+        if (anime.type.equals("movie"))
+            episodeControls.setVisibility(View.GONE);
+
         currentEpisode = anime.episodes.get(episodeIndex);
         loadTranslations(currentEpisode.id);
         episodeEdit.setText(currentEpisode.episodeInt);
 
-        login();
     }
 
-    public void login(){
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+    void setupWebView(){
+        webView = findViewById(R.id.webView);
+        View nonVideoLayout = findViewById(R.id.nonVideoLayout);
+        ViewGroup videoLayout = findViewById(R.id.videoLayout);
+        webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, webView) // See all available constructors...
+        {
+            // Subscribe to standard events, such as onProgressChanged()...
+            @Override
+            public void onProgressChanged(WebView view, int progress)
+            {
+                // Your code...
+            }
+        };
 
-        webView.loadUrl("https://smotret-anime-365.ru/users/login");
-        webView.setVisibility(View.VISIBLE);
+        webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback()
+        {
+            @Override
+            public void toggledFullscreen(boolean fullscreen)
+            {
+                // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
+                if (fullscreen)
+                {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
+                    if (android.os.Build.VERSION.SDK_INT >= 14)
+                    {
+                        //noinspection all
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                    }
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+                else
+                {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
+                    if (android.os.Build.VERSION.SDK_INT >= 14)
+                    {
+                        //noinspection all
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    }
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+
+            }
+        });
+        webView.setWebChromeClient(webChromeClient);
+        webView.setWebViewClient(new WebViewClient(){
+            public void onPageFinished(WebView view, String url) {
+                if (!url.equals("about:blank"))
+                    webView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+
+    public void onAuthBtnClick(View v){
+        Intent intent = new Intent(this, WebActivity.class);
+        intent.putExtra("requestType", "login");
+        startActivity(intent);
     }
 
     public void setupVideo(String embedUrl) {
         Log.d("request", "openVideo: " + embedUrl);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAppCacheEnabled(true);
 
         //webSettings.setUserAgentString("Anime online");
         webView.setVisibility(View.INVISIBLE);
         videoNotify.setVisibility(View.INVISIBLE);
         videoProgressBar.setVisibility(View.VISIBLE);
         webView.loadUrl(embedUrl);
-
-        ParseEmbed(embedUrl);
     }
 
-    public void ParseEmbed(String embedUrl){
-        embedUrlForParse = embedUrl;
-        ParseTask mt = new ParseTask();
-        mt.execute();
-    }
-
-    public void onParsed(String videoSources){
-        //Log.d("response", "video: "+videoSources);
-    }
-
-    class ParseTask extends AsyncTask<Void, Void, Void> {
-
-        String videoSources;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
-            final String LOGIN_FORM_URL = "https://smotret-anime-365.ru/users/login?dynpage=1";
-            final String LOGIN_ACTION_URL = "https://smotret-anime-365.ru/users/login";
-            final String USERNAME = "sergo79f1@gmail.com";
-            final String PASSWORD = "Sergo7997_f1";
-
-            Document doc = null;//Здесь хранится будет разобранный html документ
-            try {
-                Connection.Response loginForm = Jsoup.connect(LOGIN_FORM_URL)
-                        .method(Connection.Method.GET)
-                        .userAgent(USER_AGENT)
-                        .execute();
-                Document loginDoc = loginForm.parse();
-                HashMap<String, String> cookies = new HashMap<>(loginForm.cookies());
-                for (Map.Entry<String, String> cookie : cookies.entrySet()) {
-                    Log.d("response", "cookie: "+cookie.getKey() + " : " + cookie.getValue());
-                }
-                String csrf = loginDoc.select("input[name=csrf]").first().attr("value");
-                HashMap<String, String> formData = new HashMap<>();
-                formData.put("yt0", "");
-                formData.put("dynpage", "1");
-                formData.put("login", USERNAME);
-                formData.put("password", PASSWORD);
-                formData.put("csrf", csrf);
-
-                Log.d("response", csrf);
-
-                Connection.Response homePage = Jsoup.connect(LOGIN_ACTION_URL)
-                        .cookies(loginForm.cookies())
-                        .data(formData)
-                        .method(Connection.Method.POST)
-                        .userAgent(USER_AGENT)
-                        .followRedirects(true)
-                        .execute();
-
-                for (Map.Entry<String, String> cookie : homePage.cookies().entrySet()) {
-                    Log.d("response", "cookie2: "+cookie.getKey() + " : " + cookie.getValue());
-                }
-                Log.d("response", csrf);
-
-                videoSources = homePage.parse().body().toString();
-
-                cookies = new HashMap<>(homePage.cookies());
-
-                Connection.Response videoPage = Jsoup.connect(embedUrlForParse)
-                        .method(Connection.Method.GET)
-                        .userAgent(USER_AGENT)
-                        .execute();
-
-                //videoSources = videoPage.parse().body().toString();
-
-            } catch (IOException e) {
-                //Если не получилось считать
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-
-            onParsed(videoSources);
-        }
-    }
 
     void loadTranslations(final int episodeId) {
         Log.d("request", "loadTranslations");
-        api.Request(new Link().episode(episodeId).get(),
+        Link link = new Link().episode(episodeId);
+        Log.d("link", link.get());
+        api.Request(link.get(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -258,6 +263,9 @@ public class WatchActivity extends AppCompatActivity {
     }
 
     public void changeEpisode(){
+        for(int i=0;i<tabs.size();i++)
+            tabs.get(i).hideList();
+
         episodeEdit.setText(currentEpisode.episodeInt);
         loadTranslations(currentEpisode.id);
         webView.setVisibility(View.INVISIBLE);
@@ -271,5 +279,34 @@ public class WatchActivity extends AppCompatActivity {
             tabs.get(i).clearSelect();
         }
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+        /*if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }*/
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        // Notify the VideoEnabledWebChromeClient, and handle it ourselves if it doesn't handle it
+        if (!webChromeClient.onBackPressed())
+        {
+            if (webView.canGoBack())
+            {
+                webView.goBack();
+            }
+            else
+            {
+                // Standard back button implementation (for example this could close the app)
+                super.onBackPressed();
+            }
+        }
+    }
+
 
 }

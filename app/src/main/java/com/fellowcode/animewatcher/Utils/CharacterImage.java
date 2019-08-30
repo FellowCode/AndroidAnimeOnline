@@ -21,7 +21,7 @@ public class CharacterImage extends android.support.v7.widget.AppCompatImageView
 
         int height = getMeasuredHeight();
 
-        int width = Math.round(height * .71428f);
+        int width = Math.round(height * .65f);
         setMeasuredDimension(width, height);
     }
 }

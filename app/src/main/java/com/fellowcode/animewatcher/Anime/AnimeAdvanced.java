@@ -1,6 +1,7 @@
 package com.fellowcode.animewatcher.Anime;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import com.fellowcode.animewatcher.Api.Link;
 
@@ -26,6 +27,7 @@ public class AnimeAdvanced extends Anime implements Serializable {
     public String studioName;
 
     public String description;
+    public String descriptionHtml;
 
     public ArrayList<Episode> episodes = new ArrayList<>();
     ArrayList<Genre> genres = new ArrayList<>();
@@ -36,6 +38,10 @@ public class AnimeAdvanced extends Anime implements Serializable {
     }
 
     public AnimeAdvanced(Anime anime) {
+        updateAnimeValues(anime);
+    }
+
+    public void updateAnimeValues(Anime anime){
         id = anime.id;
         shikiId = anime.shikiId;
         isActive = anime.isActive;
@@ -52,18 +58,11 @@ public class AnimeAdvanced extends Anime implements Serializable {
 
     @Override
     public void ParseSmAnime(JSONObject anime) throws JSONException {
+        Log.d("test", "startParseSMAnime");
         super.ParseSmAnime(anime);
         season = anime.getString("season");
         numberOfEpisodes = anime.getInt("numberOfEpisodes");
         countViews = anime.getInt("countViews");
-        JSONArray descArray = anime.getJSONArray("descriptions");
-        for (int i = 0; i < descArray.length(); i++) {
-            JSONObject desc = descArray.getJSONObject(i);
-            if (desc.getString("source").equals("shikimori.org") || i == descArray.length() - 1) {
-                description = desc.getString("value");
-                break;
-            }
-        }
         JSONArray episodArray = anime.getJSONArray("episodes");
         for (int i = 0; i < episodArray.length(); i++) {
             JSONObject episode = episodArray.getJSONObject(i);
@@ -79,6 +78,7 @@ public class AnimeAdvanced extends Anime implements Serializable {
     }
 
     public void ParseShiki(JSONObject anime) throws JSONException{
+        descriptionHtml = anime.getString("description_html");
         rating = anime.getString("rating");
         aired_on = reFormatDate(anime.getString("aired_on"));
         released_on = reFormatDate(anime.getString("released_on"));
@@ -87,7 +87,7 @@ public class AnimeAdvanced extends Anime implements Serializable {
     }
 
     public void ParseShikiCharacters(JSONArray characters) throws JSONException{
-        for (int i=0; i<characters.length(); i++){
+        for (int i=characters.length()-1; i>=0; i--){
             JSONObject obj = characters.getJSONObject(i);
             if (!obj.isNull("character")) {
                 JSONObject character = obj.getJSONObject("character");

@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
 
 import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
@@ -22,6 +23,9 @@ public class AnimeFilteredActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
+    View listEmpty;
+    View progressBar;
+
     Api api;
     AnimeList animeList;
 
@@ -35,6 +39,9 @@ public class AnimeFilteredActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(R.string.filter);
+
+        listEmpty = findViewById(R.id.list_empty);
+        progressBar = findViewById(R.id.loader);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -51,6 +58,7 @@ public class AnimeFilteredActivity extends AppCompatActivity {
     public void SetupFilter(final Link link){
         animeList.clear();
         link.animes();
+        progressBar.setVisibility(View.VISIBLE);
         animeList.setRequest(new AnimeListRequest() {
             @Override
             public Link getUrl() {
@@ -61,6 +69,11 @@ public class AnimeFilteredActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("response", response);
+                if (animeList.size() == 0)
+                    listEmpty.setVisibility(View.VISIBLE);
+                else
+                    listEmpty.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }).loadAnimes();
     }

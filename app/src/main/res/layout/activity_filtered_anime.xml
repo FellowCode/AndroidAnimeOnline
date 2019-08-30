@@ -29,12 +29,7 @@
                 app:titleTextColor="?toolbarTextColor" />
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:background="?recyclerBg"/>
+        <include layout="@layout/template_recycler"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

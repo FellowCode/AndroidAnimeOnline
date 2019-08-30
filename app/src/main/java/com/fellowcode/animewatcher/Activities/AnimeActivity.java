@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,13 +25,18 @@ import com.fellowcode.animewatcher.Anime.Anime;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
 import com.fellowcode.animewatcher.Anime.AnimeRatings;
 import com.fellowcode.animewatcher.Anime.CharacterAdapter;
+import com.fellowcode.animewatcher.Anime.Favorites;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.Utils.NavButtons;
+import com.fellowcode.animewatcher.Utils.ViewUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 public class AnimeActivity extends AppCompatActivity {
 
@@ -49,7 +53,13 @@ public class AnimeActivity extends AppCompatActivity {
 
     RecyclerView charactersView;
 
-    Button watchBtn;
+    ImageView favoriteBtn;
+    View watchBtn;
+
+    Favorites favorites;
+
+    View progressBar;
+    boolean req1, req2, req3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +81,13 @@ public class AnimeActivity extends AppCompatActivity {
         released_layout = findViewById(R.id.released_layout);
         studio = findViewById(R.id.studio);
         loader = findViewById(R.id.loader);
+        favoriteBtn = findViewById(R.id.favorite_btn);
         watchBtn = findViewById(R.id.watch_btn);
+        progressBar = findViewById(R.id.progressBar);
+
+        new NavButtons(this);
+
+        favorites = new Favorites(this);
 
         charactersView = findViewById(R.id.charactersView);
         charactersView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -84,33 +100,43 @@ public class AnimeActivity extends AppCompatActivity {
 
         Anime a = (Anime) getIntent().getSerializableExtra("anime");
         anime = new AnimeAdvanced(a);
-        getAnimeRequest(anime.id);
+
+        if (favorites.checkIn(anime))
+            favoriteBtn.setImageResource(R.drawable.ic_star_fill);
+
+        getAnimeRequest(anime.shikiId);
         getAnimeFromShikiReq(anime.shikiId);
         getAnimeCharacters(anime.shikiId);
         UpdateFields();
         UpdateFiledsShiki();
     }
 
-    void getAnimeRequest(int id) {
+    void getAnimeRequest(int shikiId) {
+        req1 = true;
+        progressBar.setVisibility(View.VISIBLE);
         Log.d("request", "getAnime");
         Response.Listener<String> respListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("response", response);
                 try {
-                    anime.ParseSmAnime(new JSONObject(response).getJSONObject("data"));
+                    anime.ParseSmAnime(new JSONObject(response).getJSONArray("data").getJSONObject(0));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                req1 = false;
+                hideProgressBar();
                 UpdateFields();
             }
         };
-        Link link = new Link().anime(id);
+        Link link = new Link().animeByShikiId(shikiId);
         Log.d("link", link.get());
         api.Request(link.get(), respListener);
     }
 
     void getAnimeFromShikiReq(int id) {
+        req2 = true;
+        progressBar.setVisibility(View.VISIBLE);
         Log.d("request", "getAnimeFromShiki");
         Response.Listener<String> respListener = new Response.Listener<String>() {
             @Override
@@ -121,6 +147,8 @@ public class AnimeActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                req2 = false;
+                hideProgressBar();
                 UpdateFiledsShiki();
             }
         };
@@ -130,6 +158,8 @@ public class AnimeActivity extends AppCompatActivity {
     }
 
     void getAnimeCharacters(int id){
+        req3 = true;
+        progressBar.setVisibility(View.VISIBLE);
         Log.d("request", "getAnimeCharacters");
         Response.Listener<String> respListener = new Response.Listener<String>() {
             @Override
@@ -140,6 +170,8 @@ public class AnimeActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                req3 = false;
+                hideProgressBar();
                 CharacterAdapter adapter = new CharacterAdapter(anime.characters);
                 charactersView.setAdapter(adapter);
             }
@@ -167,6 +199,7 @@ public class AnimeActivity extends AppCompatActivity {
                     }
                 })
                 .into(poster);
+
         title.setText(anime.russian);
         title_romaji.setText(anime.romaji);
         genres.setText(HtmlCompat.fromHtml(
@@ -176,7 +209,6 @@ public class AnimeActivity extends AppCompatActivity {
         else
             type.setText(anime.typeTitle);
         score.setText(anime.myAnimeListScore);
-        description.setText(anime.description);
         if (anime.episodes.size()>0)
             watchBtn.setVisibility(View.VISIBLE);
     }
@@ -198,11 +230,28 @@ public class AnimeActivity extends AppCompatActivity {
             released_layout.setVisibility(View.GONE);
 
         studio.setText(anime.studioName);
+        if (anime.descriptionHtml != null)
+            description.setText(HtmlCompat.fromHtml(anime.descriptionHtml, HtmlCompat.FROM_HTML_MODE_COMPACT));
+    }
+
+    public void favoriteBtnClick(View v){
+        if (favorites.checkIn(anime)) {
+            favorites.remove(anime);
+            favoriteBtn.setImageResource(R.drawable.ic_star);
+        } else {
+            favorites.add(anime);
+            favoriteBtn.setImageResource(R.drawable.ic_star_fill);
+        }
     }
 
     public void watchAnime(View v){
         Intent intent = new Intent(this, WatchActivity.class);
         intent.putExtra("anime", anime);
         startActivity(intent);
+    }
+
+    void hideProgressBar(){
+        if(!req1 && !req2 && !req3)
+            progressBar.setVisibility(View.INVISIBLE);
     }
 }

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.android.volley.Response;
 import com.fellowcode.animewatcher.Api.Api;
@@ -56,6 +57,7 @@ public class AnimeList implements Serializable {
     public AnimeList setRecyclerView(RecyclerView recycler){
         recyclerView = recycler;
         recyclerView.setAdapter(adapter);
+        recyclerView.setVisibility(View.INVISIBLE);
         recyclerScrollSetup();
         return this;
     }
@@ -72,22 +74,23 @@ public class AnimeList implements Serializable {
 
     private void Request() {
         currReq = true;
-        Link link = request.getUrl();
+        final Link link = request.getUrl();
         Log.d("link", link.get());
         api.Request(link.get(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                animes.addAll(ParseAnimes(response));
+                if (link.isShiki)
+                    animes.addAll(ParseAnimesShiki(response));
+                else
+                    animes.addAll(ParseAnimes(response));
                 adapter.notifyDataSetChanged();
-                request.onResponse(response);
                 currReq = false;
+                recyclerView.setVisibility(View.VISIBLE);
+                request.onResponse(response);
             }
         });
     }
 
-    private void RequestShiki(){
-
-    }
 
     public void loadAnimes() {
         if (!currReq && !endOfList)
@@ -101,6 +104,26 @@ public class AnimeList implements Serializable {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 Anime anime = new Anime(obj);
+                animeList.add(anime);
+            }
+            if (array.length() < ANIME_LIMIT)
+                endOfList = true;
+            return animeList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            endOfList = true;
+            return new ArrayList<>();
+        }
+    }
+
+    private ArrayList<Anime> ParseAnimesShiki(String response) {
+        try {
+            JSONArray array = new JSONArray(response);
+            ArrayList<Anime> animeList = new ArrayList<>();
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                Anime anime = new Anime();
+                anime.ParseShiki(obj);
                 animeList.add(anime);
             }
             if (array.length() < ANIME_LIMIT)

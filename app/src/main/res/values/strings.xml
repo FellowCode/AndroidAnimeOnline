@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Anime online</string>
+    <string name="app_name">AniWatch</string>
     <string name="search_anime">Search anime…</string>
     <string name="ongoings">Ongoings</string>
     <string name="all">All</string>
@@ -43,4 +43,7 @@
     <string name="episode_not_found">Episode not found</string>
     <string name="episode_not_selected">Episode not selected</string>
     <string name="translation_not_selected">Translation not selected</string>
+    <string name="auth_on_anime365">Authenticate on Anime365</string>
+    <string name="auth_success">Success authenticate</string>
+    <string name="list_empty">List empty</string>
 </resources>

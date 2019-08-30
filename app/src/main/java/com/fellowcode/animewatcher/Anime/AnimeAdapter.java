@@ -105,8 +105,8 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
                     .into(image);
             title.setText(anime.getTitle("ru"));
 
-            if (anime.myAnimeListScore.equals("-1"))
-                score.setText("???");
+            if (anime.myAnimeListScore == null || anime.myAnimeListScore.equals("-1"))
+                score.setVisibility(View.INVISIBLE);
             else
                 score.setText(anime.myAnimeListScore);
 

@@ -23,11 +23,9 @@ public class VideoFrameLayout extends FrameLayout {
 
         int width = getMeasuredWidth();
 
-        Log.d("test", "width "+width);
 
         //force a 16:9 aspect ratio
         int height = Math.round(width / 1.77778f) + 100;
-        Log.d("test", "height "+height);
         setMeasuredDimension(width, height);
     }
 }

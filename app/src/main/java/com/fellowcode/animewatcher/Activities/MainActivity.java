@@ -114,14 +114,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("test", "aasd");
     }
 
-    public void homeBtnClick(View v){
-
-    }
-
-    public void favoritesBtnClick(View v){
-
-    }
-
 
 
 }

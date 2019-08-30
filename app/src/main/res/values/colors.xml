@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="selectIcon">#E64E4E</color>
-    <color name="selectItem">#C5BBD6</color>
+    <color name="selectItem">#BBCAD6</color>
 
-    <color name="colorPrimary">#4A2A80</color>
-    <color name="colorPrimaryDark">#2E1058</color>
-    <color name="colorAccent">#1C91B4</color>
+    <color name="colorPrimary">#1F6AAA</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#11A38B</color>
     <color name="text">#363636</color>
     <color name="icon">#868686</color>
     <color name="background">#fff</color>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.fellowcode.animewatcher.Activities.FavoritesActivity;
 import com.fellowcode.animewatcher.Activities.FiltersListActivity;
 import com.fellowcode.animewatcher.Activities.MainActivity;
 import com.fellowcode.animewatcher.Activities.SearchActivity;
@@ -42,6 +43,14 @@ public class NavButtons {
             }
         });
 
+        favoritesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, FavoritesActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +74,14 @@ public class NavButtons {
     }
 
     public void select(int btn){
+
         setColor(R.color.selectIcon, btns.get(btn));
+        setOnClick(btn, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 

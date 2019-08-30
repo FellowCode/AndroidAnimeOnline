@@ -25,8 +25,7 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:paddingTop="2dp"
-            android:onClick="homeBtnClick">
+            android:paddingTop="2dp">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -51,8 +50,7 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:paddingTop="2dp"
-            android:onClick="favoritesBtnClick">
+            android:paddingTop="2dp">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -76,7 +74,6 @@
             android:background="@drawable/ripple"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="searchBtnClick"
             android:orientation="vertical"
             android:paddingTop="2dp">
 
@@ -103,8 +100,7 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:paddingTop="2dp"
-            android:onClick="filterBtnClick">
+            android:paddingTop="2dp">
 
             <ImageView
                 android:layout_width="match_parent"

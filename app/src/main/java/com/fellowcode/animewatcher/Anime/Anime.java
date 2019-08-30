@@ -1,5 +1,7 @@
 package com.fellowcode.animewatcher.Anime;
 
+import com.fellowcode.animewatcher.Api.Link;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,6 +76,21 @@ public class Anime implements Serializable {
         posterUrlSmall = anime.getString("posterUrlSmall");
         posterUrl = anime.getString("posterUrl");
     }
+
+    public void ParseShiki(JSONObject anime) throws JSONException {
+        shikiId = anime.getInt("id");
+        romaji = anime.getString("name");
+        russian = anime.getString("russian");
+        posterUrlSmall = Link.shikiUrl + anime.getJSONObject("image").getString("preview");
+        posterUrl = Link.shikiUrl + anime.getJSONObject("image").getString("original");
+        type = anime.getString("kind");
+        if (anime.getString("status").equals("ongoing"))
+            isAiring = 1;
+        else
+            isAiring = 0;
+        year = Integer.valueOf(anime.getString("aired_on").split("-")[0]);
+    }
+
 
     protected Anime get() {
         return this;

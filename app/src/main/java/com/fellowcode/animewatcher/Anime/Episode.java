@@ -41,7 +41,7 @@ public class Episode implements Serializable {
     private ArrayList<Translation> getTranslationsByType(String type){
         ArrayList<Translation> t = new ArrayList<>();
         for (int i=0; i<translations.size(); i++){
-            if (translations.get(i).type.equals(type) && translations.get(i).authorsSummary.length() > 0 && translations.get(i).height>0)
+            if (translations.get(i).type.equals(type))
                 t.add(translations.get(i));
         }
         return t;

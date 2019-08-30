@@ -51,17 +51,17 @@ public class MainPageFragment extends Fragment {
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_page_main, container, false);
+        View view = inflater.inflate(R.layout.template_recycler, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.addItemDecoration(new AnimeItemDecoration(25));
 
         animeList = new AnimeList().setContext(context).setApi(api).setRecyclerView(recyclerView);
         if (mPage == Page.ONGOINGS) {
-            animeList.Load("ongoings");
+            //animeList.Load("ongoings");
             SetupOngoingsList();
         } else if (mPage == Page.ALL_ANIMES) {
-            animeList.Load("allAnimes");
+            //animeList.Load("allAnimes");
             SetupAllAnimesList();
         }
         if (animeList.size() == 0)
