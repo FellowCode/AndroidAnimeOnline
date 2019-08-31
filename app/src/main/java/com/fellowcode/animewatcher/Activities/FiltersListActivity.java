@@ -53,6 +53,7 @@ public class FiltersListActivity extends AppCompatActivity {
 
         NavButtons navButtons = new NavButtons(this);
         navButtons.select(NavButtons.FILTER);
+        navButtons.clearClick(NavButtons.FILTER);
 
         genresIsOpen = false;
         typesIsOpen = true;

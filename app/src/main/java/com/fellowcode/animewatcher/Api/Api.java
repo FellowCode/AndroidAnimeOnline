@@ -47,7 +47,7 @@ public class Api implements Serializable {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
-                headers.put("User-Agent", "Anime online");
+                headers.put("User-Agent", "AniWatch");
                 return headers;
             }
         };

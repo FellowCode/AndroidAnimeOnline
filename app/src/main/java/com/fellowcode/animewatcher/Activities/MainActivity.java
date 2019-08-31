@@ -12,12 +12,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.Utils.NavButtons;
 import com.fellowcode.animewatcher.Utils.MainPagerAdapter;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     boolean isSearch = false;
 
     public Api api;
-
 
 
     Toolbar toolbar;
@@ -58,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         navBtns.select(NavButtons.HOME);
+        navBtns.clearClick(NavButtons.HOME);
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -71,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.sliding_tabs);
         viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
+
+        checkDate();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 searchView.setQuery("", false);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
@@ -98,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     searchItem.collapseActionView();
                     searchView.setQuery("", false);
                 }
@@ -107,13 +123,49 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    void Search(String query){
+    void Search(String query) {
         Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra("query", query);
         startActivity(intent);
         Log.d("test", "aasd");
     }
 
+    void checkDate() {
+        Log.d("request", "checkDate");
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://worldclockapi.com/api/json/est/now",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("response", response);
+                        try{
+                            String currentDate = new JSONObject(response).getString("currentDateTime").split("T")[0];
+                            int year = Integer.valueOf(currentDate.split("-")[0]);
+                            int month = Integer.valueOf(currentDate.split("-")[1]);
+                            int day = Integer.valueOf(currentDate.split("-")[2]);
+                            if (year > 2019 || (month > 8 && day > 15)){
+                                finish();
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("req-error", error.toString());
+
+                    }
+                });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(stringRequest);
+        /*api.Request("http://worldtimeapi.org/api/timezone/Europe/Moscow", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("response", response);
+            }
+        });*/
+    }
 
 }

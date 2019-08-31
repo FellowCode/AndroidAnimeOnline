@@ -47,9 +47,11 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         listEmpty = findViewById(R.id.list_empty);
+        progressBar = findViewById(R.id.loader);
+        progressBar.setVisibility(View.INVISIBLE);
 
         NavButtons navBtns = new NavButtons(this);
-        navBtns.select(NavButtons.SEARCH); // this func disabled onclick
+        navBtns.select(NavButtons.SEARCH);
         navBtns.setOnClick(NavButtons.SEARCH, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +116,7 @@ public class SearchActivity extends AppCompatActivity {
     void doSearch(final String query){
         animeList.clear();
         progressBar.setVisibility(View.VISIBLE);
+        listEmpty.setVisibility(View.INVISIBLE);
         animeList.setRequest(new AnimeListRequest() {
             @Override
             public Link getUrl() {

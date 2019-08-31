@@ -1,5 +1,6 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -38,6 +39,8 @@ public class FavoritesActivity extends AppCompatActivity {
     Api api;
     AnimeList animeList;
 
+    NavButtons navButtons;
+
     @Override
     public void onCreate(Bundle savedInstanceSate){
         super.onCreate(savedInstanceSate);
@@ -46,6 +49,9 @@ public class FavoritesActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(R.string.favorites);
+
+        listEmpty = findViewById(R.id.list_empty);
+        progressBar = findViewById(R.id.loader);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -58,8 +64,22 @@ public class FavoritesActivity extends AppCompatActivity {
 
         setupFavorites();
 
-        NavButtons navButtons = new NavButtons(this);
+        navButtons = new NavButtons(this);
         navButtons.select(NavButtons.FAVORITES);
+        navButtons.clearClick(NavButtons.FAVORITES);
+        navButtons.setOnClick(NavButtons.SEARCH, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (searchItem.isActionViewExpanded()){
+                    searchView.setQuery("", false);
+                    searchItem.collapseActionView();
+                    searchView.clearFocus();
+                } else {
+                    searchItem.expandActionView();
+                    searchView.requestFocusFromTouch();
+                }
+            }
+        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,42 +108,34 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     void doSearch(final String query){
-        animeList.clear();
         if(favorites.getShikiIdsList().size()>0) {
-            progressBar.setVisibility(View.VISIBLE);
-            animeList.setRequest(new AnimeListRequest() {
+            navButtons.setOnClick(NavButtons.FAVORITES, new View.OnClickListener() {
                 @Override
-                public Link getUrl() {
-                    Log.d("request", "ReqFavoritesSearch");
-                    return new Link().shiki()
-                            .animes()
-                            .addField("id", favorites.getShikiIdsList())
-                            .addField("search", query)
-                            .offset(animeList.size());
+                public void onClick(View v) {
+                    animeList.clearSearch();
+                    setTitle(R.string.favorites);
                 }
+            });
 
-                @Override
-                public void onResponse(String response) {
-                    Log.d("response", response);
-                    if (animeList.size()>0)
-                        listEmpty.setVisibility(View.INVISIBLE);
-                    else
-                        listEmpty.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-            }).loadAnimes();
-            Log.d("test", "search");
+            animeList.search(query);
+
+            if (animeList.size() == 0)
+                listEmpty.setVisibility(View.VISIBLE);
+
             setTitle(String.format("%s: %s", getString(R.string.favorites), query));
         } else {
-            progressBar.setVisibility(View.INVISIBLE);
             listEmpty.setVisibility(View.VISIBLE);
+            animeList.clearSearch();
         }
+        if (query.replace(" ", "").length()==0)
+            animeList.clearSearch();
     }
 
     void setupFavorites(){
         animeList.clear();
         if(favorites.getShikiIdsList().size()>0) {
             progressBar.setVisibility(View.VISIBLE);
+            listEmpty.setVisibility(View.INVISIBLE);
             animeList.setRequest(new AnimeListRequest() {
                 @Override
                 public Link getUrl() {
@@ -144,5 +156,6 @@ public class FavoritesActivity extends AppCompatActivity {
             progressBar.setVisibility(View.INVISIBLE);
             listEmpty.setVisibility(View.VISIBLE);
         }
+        setTitle(R.string.favorites);
     }
 }

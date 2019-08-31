@@ -45,4 +45,5 @@
     <string name="translation_not_selected">Не выбран перевод</string>
     <string name="auth_on_anime365">Авторизоваться в Anime365</string>
     <string name="auth_success">Успешная авторизация</string>
+    <string name="list_empty">Список пуст</string>
 </resources>

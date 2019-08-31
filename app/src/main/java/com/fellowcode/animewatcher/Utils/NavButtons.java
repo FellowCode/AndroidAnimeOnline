@@ -73,26 +73,33 @@ public class NavButtons {
         btns.put(FILTER, filterBtn);
     }
 
-    public void select(int btn){
+    public NavButtons select(int btn){
 
         setColor(R.color.selectIcon, btns.get(btn));
+        return this;
+    }
+
+    public NavButtons clearClick(int btn){
         setOnClick(btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+        return this;
     }
 
 
-    private void setColor(int color_res, View btn){
+    private NavButtons setColor(int color_res, View btn){
         ImageView icon = ViewUtils.getChildImageView(btn);
         if (icon != null)
             icon.setColorFilter(ContextCompat.getColor(activity, color_res));
+        return this;
     }
 
-    public void setOnClick(int btn, View.OnClickListener listener){
+    public NavButtons setOnClick(int btn, View.OnClickListener listener){
         Objects.requireNonNull(btns.get(btn)).setOnClickListener(listener);
+        return this;
     }
 
 }

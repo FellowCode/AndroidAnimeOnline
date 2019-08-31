@@ -23,7 +23,7 @@ public class ImageFixed extends android.support.v7.widget.AppCompatImageView {
         int width = getMeasuredWidth();
 
         //force a 16:9 aspect ratio
-        int height = Math.round(width / .71428f);
+        int height = Math.round(width / .71f);
         setMeasuredDimension(width, height);
     }
 }

@@ -18,9 +18,12 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AnimeList implements Serializable {
     private ArrayList<Anime> animes = new ArrayList<>();
+    private ArrayList<Anime> searches = new ArrayList<>();
+    private boolean isSearch;
     private AnimeAdapter adapter;
     private RecyclerView recyclerView;
     public boolean currReq = false;
@@ -85,7 +88,10 @@ public class AnimeList implements Serializable {
                     animes.addAll(ParseAnimes(response));
                 adapter.notifyDataSetChanged();
                 currReq = false;
-                recyclerView.setVisibility(View.VISIBLE);
+                if (animes.size()>0)
+                    recyclerView.setVisibility(View.VISIBLE);
+                else
+                    recyclerView.setVisibility(View.INVISIBLE);
                 request.onResponse(response);
             }
         });
@@ -137,7 +143,10 @@ public class AnimeList implements Serializable {
     }
 
     public int size() {
-        return animes.size();
+        if (isSearch)
+            return searches.size();
+        else
+            return animes.size();
     }
 
     public void Save(String key) {
@@ -166,5 +175,36 @@ public class AnimeList implements Serializable {
                     loadAnimes();
             }
         });
+    }
+
+    public void search(String query){
+        String[] queries = query.split(" ");
+        Log.d("test", String.valueOf(animes.size()));
+        isSearch = true;
+        searches.clear();
+        for (int i=0;i<animes.size();i++){
+            for (String query1 : queries) {
+                Log.d("test", animes.get(i).russian.toLowerCase() + " " + query1.toLowerCase());
+                if (animes.get(i).russian != null && animes.get(i).russian.toLowerCase().contains(query1.toLowerCase()))
+                    searches.add(animes.get(i));
+                if (animes.get(i).english != null && animes.get(i).english.toLowerCase().contains(query1.toLowerCase()))
+                    searches.add(animes.get(i));
+                if (animes.get(i).romaji != null && animes.get(i).romaji.toLowerCase().contains(query1.toLowerCase()))
+                    searches.add(animes.get(i));
+            }
+        }
+        adapter = new AnimeAdapter(searches);
+        recyclerView.setAdapter(adapter);
+
+        if (searches.size()==0)
+            recyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    public void clearSearch(){
+        adapter = new AnimeAdapter(animes);
+        recyclerView.setAdapter(adapter);
+
+        if (animes.size()>0)
+            recyclerView.setVisibility(View.VISIBLE);
     }
 }

@@ -59,6 +59,7 @@ public class AnimeFilteredActivity extends AppCompatActivity {
         animeList.clear();
         link.animes();
         progressBar.setVisibility(View.VISIBLE);
+        listEmpty.setVisibility(View.INVISIBLE);
         animeList.setRequest(new AnimeListRequest() {
             @Override
             public Link getUrl() {
