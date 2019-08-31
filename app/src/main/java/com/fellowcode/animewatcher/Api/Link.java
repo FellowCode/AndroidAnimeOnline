@@ -38,7 +38,7 @@ public class Link implements Serializable {
 
     public Link shiki(){
         isShiki = true;
-        link = "https://shikimori.one/";
+        link = shikiUrl;
         return this;
     }
 
@@ -73,6 +73,14 @@ public class Link implements Serializable {
     public Link animeByShikiId(int shikiId){
         url = "series";
         addField("myAnimeListId", shikiId);
+        return this;
+    }
+
+    public Link userRate(int shikiId){
+        api = "api/v2/";
+        url = "user_rates";
+        addField("target_id", shikiId);
+        addField("target_type", "Anime");
         return this;
     }
 

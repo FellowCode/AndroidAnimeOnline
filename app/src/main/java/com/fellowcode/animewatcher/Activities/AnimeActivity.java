@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class AnimeActivity extends AppCompatActivity {
@@ -53,13 +55,16 @@ public class AnimeActivity extends AppCompatActivity {
 
     RecyclerView charactersView;
 
+    View myScore;
+    EditText myScoreEdit;
+
     ImageView favoriteBtn;
     View watchBtn;
 
     Favorites favorites;
 
     View progressBar;
-    boolean req1, req2, req3;
+    ArrayList<Boolean> requests = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,8 @@ public class AnimeActivity extends AppCompatActivity {
         released_layout = findViewById(R.id.released_layout);
         studio = findViewById(R.id.studio);
         loader = findViewById(R.id.loader);
+        myScore = findViewById(R.id.my_score);
+        myScoreEdit = findViewById(R.id.my_score_edit);
         favoriteBtn = findViewById(R.id.favorite_btn);
         watchBtn = findViewById(R.id.watch_btn);
         progressBar = findViewById(R.id.progressBar);
@@ -109,11 +116,15 @@ public class AnimeActivity extends AppCompatActivity {
         getAnimeCharacters(anime.shikiId);
         UpdateFields();
         UpdateFiledsShiki();
+
+        if (api.isShikiAuthenticated()){
+            myScore.setVisibility(View.VISIBLE);
+            getUserRateForAnime(anime.shikiId);
+        }
     }
 
     void getAnimeRequest(int shikiId) {
-        req1 = true;
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         Log.d("request", "getAnime");
         Response.Listener<String> respListener = new Response.Listener<String>() {
             @Override
@@ -124,7 +135,6 @@ public class AnimeActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                req1 = false;
                 hideProgressBar();
                 UpdateFields();
             }
@@ -135,8 +145,7 @@ public class AnimeActivity extends AppCompatActivity {
     }
 
     void getAnimeFromShikiReq(int id) {
-        req2 = true;
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         Log.d("request", "getAnimeFromShiki");
         Response.Listener<String> respListener = new Response.Listener<String>() {
             @Override
@@ -147,7 +156,6 @@ public class AnimeActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                req2 = false;
                 hideProgressBar();
                 UpdateFiledsShiki();
             }
@@ -157,9 +165,32 @@ public class AnimeActivity extends AppCompatActivity {
         api.Request(link.get(), respListener);
     }
 
+    void getUserRateForAnime(int shikiId){
+        showProgressBar();
+        Link link = new Link().shiki().userRate(shikiId);
+        Log.d("request", "getUserRateForAnime");
+        Log.d("link", link.get());
+        api.ShikiProtectReq(link.get(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("response", response);
+                try{
+                    JSONObject data = new JSONArray(response).getJSONObject(0);
+                    int score = data.getInt("score");
+                    Log.d("response", String.valueOf(score));
+                    if (score > 0)
+                        myScoreEdit.setText(String.valueOf(score));
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+                hideProgressBar();
+            }
+        });
+
+    }
+
     void getAnimeCharacters(int id){
-        req3 = true;
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         Log.d("request", "getAnimeCharacters");
         Response.Listener<String> respListener = new Response.Listener<String>() {
             @Override
@@ -170,7 +201,6 @@ public class AnimeActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                req3 = false;
                 hideProgressBar();
                 CharacterAdapter adapter = new CharacterAdapter(anime.characters);
                 charactersView.setAdapter(adapter);
@@ -250,8 +280,14 @@ public class AnimeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    void showProgressBar(){
+        requests.add(true);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     void hideProgressBar(){
-        if(!req1 && !req2 && !req3)
+        requests.remove(0);
+        if(requests.size() == 0)
             progressBar.setVisibility(View.INVISIBLE);
     }
 }
