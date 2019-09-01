@@ -150,11 +150,11 @@ public class AnimeList implements Serializable {
     }
 
     public void Save(String key) {
-        new Serialize<Anime>(context, key).wrList(animes);
+        Serialize.write(context, key, animes);
     }
 
     public void Load(String key) {
-        animes = new Serialize<Anime>(context, key).rdList();
+        animes = Serialize.read(context, key);
         if (animes == null) {
             animes = new ArrayList<>();
 

@@ -3,6 +3,7 @@ package com.fellowcode.animewatcher.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +17,8 @@ import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.Utils.NavButtons;
+
+import java.util.BitSet;
 
 public class WebActivity extends AppCompatActivity {
 
@@ -45,7 +48,7 @@ public class WebActivity extends AppCompatActivity {
         if (requestType!=null){
             if (requestType.equals("login")) {
                 webView.setWebViewClient(new WebViewClient() {
-                    public void onPageFinished(WebView view, String url) {
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         Log.d("webView", "onPageFinished: " + url);
                         if (url.equals("https://smotret-anime-365.ru/users/profile"))
                             onLoginSuccess();
@@ -55,9 +58,9 @@ public class WebActivity extends AppCompatActivity {
             }
             else if (requestType.equals("shikiOAuth2")){
                 webView.setWebViewClient(new WebViewClient() {
-                    public void onPageFinished(WebView view, String url) {
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         Log.d("webView", "onPageFinished: " + url);
-                        if (url.contains(Link.shikiUrl + "/oauth/authorize/")) {
+                        if (url.contains(Link.shikiUrl + "oauth/authorize/")) {
                             authShiki(url);
                         }
                     }
@@ -76,6 +79,7 @@ public class WebActivity extends AppCompatActivity {
     }
 
     void authShiki(String url){
+        Log.d("function", "authShiki");
         String[] tmp = url.split("/");
         String authCode = tmp[tmp.length-1];
         Api api = new Api(this);

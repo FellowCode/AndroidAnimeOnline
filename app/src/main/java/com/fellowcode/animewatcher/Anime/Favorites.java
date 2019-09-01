@@ -13,7 +13,7 @@ public class Favorites {
 
     public Favorites(Context context) {
         this.context = context;
-        favorites = new Serialize<AnimeAdvanced>(context, "favorites").rdList();
+        favorites = Serialize.read(context, "favorites");
         if (favorites == null)
             favorites = new ArrayList<>();
     }
@@ -80,6 +80,6 @@ public class Favorites {
     }
 
     private void save() {
-        new Serialize<AnimeAdvanced>(context, "favorites").wrList(favorites);
+        Serialize.write(context, "favorites", favorites);
     }
 }

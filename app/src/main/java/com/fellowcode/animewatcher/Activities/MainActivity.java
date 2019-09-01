@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,9 +27,6 @@ import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("test", "MainActivity");
 
         api = new Api(this);
 
@@ -88,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         checkDate();
 
         if (api.isShikiAuthenticated())
-            api.updateShikiTokens();
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

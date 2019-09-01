@@ -70,6 +70,16 @@ public class Link implements Serializable {
         return this;
     }
 
+    public Link whoami(){
+        url = "users/whoami";
+        return this;
+    }
+
+    public Link userRates(int userId){
+        url = "users/"+userId+"/anime_rates";
+        return this;
+    }
+
     public Link animeByShikiId(int shikiId){
         url = "series";
         addField("myAnimeListId", shikiId);

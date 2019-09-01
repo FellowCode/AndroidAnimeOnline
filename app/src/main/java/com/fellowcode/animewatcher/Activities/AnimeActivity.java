@@ -31,14 +31,12 @@ import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.Utils.NavButtons;
-import com.fellowcode.animewatcher.Utils.ViewUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class AnimeActivity extends AppCompatActivity {
 
@@ -170,7 +168,7 @@ public class AnimeActivity extends AppCompatActivity {
         Link link = new Link().shiki().userRate(shikiId);
         Log.d("request", "getUserRateForAnime");
         Log.d("link", link.get());
-        api.ShikiProtectReq(link.get(), new Response.Listener<String>() {
+        api.ReqShikiProtect(link.get(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("response", response);

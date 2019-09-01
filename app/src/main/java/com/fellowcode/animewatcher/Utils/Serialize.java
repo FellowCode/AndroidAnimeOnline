@@ -10,69 +10,32 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class Serialize<T> {
+public class Serialize {
 
-    private String filename;
-    private Context context;
-    private FileOutputStream fos;
-    private ObjectOutputStream oos;
-    private FileInputStream fis;
-    private ObjectInputStream ois;
-
-    public Serialize(Context context, String key) {
-        this.filename = key + ".aw";
-        this.context = context;
-    }
-
-    private void write() throws IOException {
-        fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
-        oos = new ObjectOutputStream(fos);
-    }
-
-    public void write(T obj) {
+    public static <V> void write(Context context, String key, V obj) {
         try {
-            write();
+            FileOutputStream fos = context.openFileOutput(getFilename(key), Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(obj);
-            close();
+            fos.close();
+            oos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void wrArray(T[] objects) {
+    static public <V> V read(Context context, String key) {
         try {
-            write();
-            oos.writeObject(objects);
-            close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void wrList(ArrayList<T> objects) {
-        try {
-            write();
-            oos.writeObject(objects);
-            close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void rdSetup() throws IOException {
-        fis = context.openFileInput(filename);
-        ois = new ObjectInputStream(fis);
-    }
-
-    public T read() {
-        try {
-            rdSetup();
-            T obj = (T) ois.readObject();
+            FileInputStream fis = context.openFileInput(getFilename(key));
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Object o = ois.readObject();
+            Log.d("request", String.valueOf(o));
+            V obj = (V) o;
             Log.d("request", String.valueOf(obj));
-            close();
+            fis.close();
+            ois.close();
             return obj;
         } catch (IOException e) {
-            Log.d("request", "azaza");
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -81,43 +44,7 @@ public class Serialize<T> {
         return null;
     }
 
-    public T[] rdArray(){
-        try {
-            rdSetup();
-            T[] objects = (T[]) ois.readObject();
-            close();
-            return objects;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+    static String getFilename(String key){
+        return key + ".aw";
     }
-
-    public ArrayList<T> rdList() {
-        try {
-            rdSetup();
-            ArrayList<T> objects = (ArrayList) ois.readObject();
-            close();
-            return objects;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void close() throws IOException {
-        if (oos != null)
-            oos.close();
-        if (fos != null)
-            fos.close();
-        if (ois != null)
-            ois.close();
-        if (fis != null)
-            fis.close();
-    }
-
 }

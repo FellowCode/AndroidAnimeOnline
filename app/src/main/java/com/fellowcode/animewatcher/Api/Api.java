@@ -2,7 +2,6 @@ package com.fellowcode.animewatcher.Api;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.User.UserShiki;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,17 +32,12 @@ public class Api implements Serializable {
     static String CLIENT_SECRET = "bb95386ff0d2afaf30ba6fd5bad16fee9a8ee6c8840e2145f2f715e6678b0b5b";
     public static String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
 
-
-    //oauth
-    String accessToken;
-    String refreshToken;
-    int endDateTime;
-    int userId;
+    UserShiki userShiki;
 
     public Api(Context context) {
         queue = Volley.newRequestQueue(context);
         this.context = context;
-        loadAuthTokens();
+        userShiki = new UserShiki(context);
     }
 
     public static String getAuthURI(){
@@ -63,7 +58,7 @@ public class Api implements Serializable {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
-                headers.put("User-Agent", "AniWatch");
+                headers.put("UserShiki-Agent", "AniWatch");
                 return headers;
             }
         };
@@ -71,7 +66,7 @@ public class Api implements Serializable {
         queue.add(stringRequest);
     }
 
-    public void ShikiProtectReq(final String url, final Response.Listener<String> respList) {
+    public void ReqShikiProtect(final String url, final Response.Listener<String> respList) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 respList,
                 new Response.ErrorListener() {
@@ -84,8 +79,8 @@ public class Api implements Serializable {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
-                headers.put("User-Agent", "AniWatch");
-                headers.put("Authorization", "Bearer " + accessToken);
+                headers.put("UserShiki-Agent", "AniWatch");
+                headers.put("Authorization", "Bearer " + userShiki.accessToken);
                 return headers;
             }
         };
@@ -93,29 +88,12 @@ public class Api implements Serializable {
         queue.add(stringRequest);
     }
 
-    void saveShikiAuthTokens(){
-        SharedPreferences authShiki = context.getSharedPreferences("authShiki", Context.MODE_PRIVATE);
-        authShiki.edit()
-                .putString("accessToken",  accessToken)
-                .putString("refreshToken", refreshToken)
-                .putInt("endDateTime", endDateTime)
-                .apply();
-    }
-
-    Api loadAuthTokens() {
-        SharedPreferences authShiki = context.getSharedPreferences("authShiki", Context.MODE_PRIVATE);
-        accessToken = authShiki.getString("accessToken", null);
-        refreshToken = authShiki.getString("refreshToken", null);
-        endDateTime = authShiki.getInt("endDateTime", 0);
-        return this;
-    }
-
     public void authInShiki(String authCode, Auth listener){
         getShikiAuthTokens(false, authCode, listener);
 
     }
 
-    public void updateShikiTokens(){
+    public void refreshShikiTokens(){
         getShikiAuthTokens(true, null, null);
     }
 
@@ -130,12 +108,12 @@ public class Api implements Serializable {
                         Log.d("oauth", "response: "+response);
                         try{
                             JSONObject authData = new JSONObject(response);
-                            accessToken = authData.getString("access_token");
-                            refreshToken = authData.getString("refresh_token");
-                            endDateTime = authData.getInt("created_at") + authData.getInt("expires_in");
-                            saveShikiAuthTokens();
+                            userShiki.accessToken = authData.getString("access_token");
+                            userShiki.refreshToken = authData.getString("refresh_token");
+                            userShiki.endDateTime = authData.getInt("created_at") + authData.getInt("expires_in");
+                            userShiki.save(context);
                             if (!isRefresh)
-                                getUserId();
+                                getUserData();
                             if (listener != null)
                                 listener.onSuccess();
                         } catch (JSONException e){
@@ -155,7 +133,7 @@ public class Api implements Serializable {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
-                headers.put("User-Agent", "AniWatch");
+                headers.put("UserShiki-Agent", "AniWatch");
                 return headers;
             }
             @Override
@@ -163,7 +141,7 @@ public class Api implements Serializable {
                 Map<String, String>  params = new HashMap<>();
                 if (isRefresh) {
                     params.put("grant_type", "refresh_token");
-                    params.put("refresh_token", refreshToken);
+                    params.put("refresh_token", userShiki.refreshToken);
                 }else {
                     params.put("grant_type", "authorization_code");
                     params.put("code", authCode);
@@ -185,12 +163,34 @@ public class Api implements Serializable {
         queue.add(stringRequest);
     }
 
-    public boolean isShikiAuthenticated(){
-        return accessToken != null && refreshToken != null && endDateTime != 0;
+    public void getUserData(){
+        Log.d("request", "getUserData");
+        Link link = new Link().shiki().whoami();
+        ReqShikiProtect(link.get(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("response", "user: "+response);
+                try{
+                    JSONObject data = new JSONObject(response);
+                    userShiki.id = data.getInt("id");
+                    userShiki.imageUrl = data.getJSONObject("image").getString("x48");
+                    userShiki.nickname = data.getString("nickname");
+                    userShiki.save(context);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    public void getUserId(){
+    public void getUserRates(final Response.Listener<String> listener){
+        Log.d("request", "getUserData");
+        Link link = new Link().shiki().userRates(userShiki.id);
+        ReqShikiProtect(link.get(), listener);
+    }
 
+    public boolean isShikiAuthenticated(){
+        return userShiki.accessToken != null && userShiki.refreshToken != null && userShiki.endDateTime != 0;
     }
 
     public interface Auth{
