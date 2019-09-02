@@ -247,13 +247,20 @@
                             android:paddingBottom="5dp"
                             android:textSize="16sp" />
 
+                        <Spinner
+                            android:layout_marginTop="10dp"
+                            android:id="@+id/addInList"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"/>
                         <LinearLayout
                             android:id="@+id/my_score"
                             android:layout_marginTop="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:visibility="gone">
+                            android:visibility="visible">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -265,14 +272,19 @@
                                 android:layout_width="35dp"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/filter_input"
-                                android:textSize="20sp"/>
+                                android:textSize="20sp"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:imeOptions="actionDone"
+                                android:digits="0123456789"
+                                android:inputType="number"/>
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp">
 
                             <ImageView

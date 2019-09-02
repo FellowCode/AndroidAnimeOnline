@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +62,16 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
         return list.size();
     }
 
+    @Override
+    public long getItemId(int position){
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position){
+        return position;
+    }
+
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
@@ -73,6 +84,8 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 
         View loader;
 
+        private RecyclerView animeRecyclerView;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -84,6 +97,8 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
             score = itemView.findViewById(R.id.score);
             cardView = itemView.findViewById(R.id.card_view);
             loader = itemView.findViewById(R.id.loader);
+
+            animeRecyclerView = itemView.findViewById(R.id.recyclerView);
         }
 
         public void bind(Anime anime, View.OnClickListener listener) {
@@ -114,11 +129,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
             else
                 score.setText(anime.myAnimeListScore);
 
-            if(anime.russian.equals("Син-тян"))
-                Log.d("test", anime.russian);
-            if (anime.rateStatus == null)
-                Log.d("test", anime.russian);
-            else if (!anime.rateStatus.equals("none"))
+            if (anime.rateStatus != null)
                 if (UserRates.getIcon(anime.rateStatus) != 0)
                     rateStatus.setImageResource(UserRates.getIcon(anime.rateStatus));
                 else {

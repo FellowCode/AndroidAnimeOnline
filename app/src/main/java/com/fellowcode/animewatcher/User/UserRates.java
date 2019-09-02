@@ -24,6 +24,8 @@ public class UserRates {
         void onResponse();
     }
 
+
+
     public ArrayList<Rate> rates = new ArrayList<>();
 
 

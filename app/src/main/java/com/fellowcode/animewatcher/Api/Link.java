@@ -1,5 +1,7 @@
 package com.fellowcode.animewatcher.Api;
 
+import com.fellowcode.animewatcher.User.UserShiki;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -80,16 +82,23 @@ public class Link implements Serializable {
         return this;
     }
 
+    public Link editUserRate(int rateId){
+        api = "api/v2/";
+        url = "user_rates/"+rateId;
+        return this;
+    }
+
     public Link animeByShikiId(int shikiId){
         url = "series";
         addField("myAnimeListId", shikiId);
         return this;
     }
 
-    public Link userRate(int shikiId){
+    public Link userRate(int shikiId, int userId){
         api = "api/v2/";
         url = "user_rates";
         addField("target_id", shikiId);
+        addField("user_id", userId);
         addField("target_type", "Anime");
         return this;
     }

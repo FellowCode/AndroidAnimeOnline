@@ -11,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fellowcode.animewatcher.R;
@@ -42,7 +43,7 @@ public class Api implements Serializable {
         userShiki = new UserShiki(context);
     }
 
-    public static String getAuthURI(){
+    public static String getAuthURI() {
         return Link.shikiUrl + "/oauth/authorize?client_id=" + Api.CLIENT_ID + "&redirect_uri=" + Api.REDIRECT_URI + "&response_type=code&scope=";
     }
 
@@ -90,25 +91,46 @@ public class Api implements Serializable {
         queue.add(stringRequest);
     }
 
-    public void authInShiki(String authCode, Auth listener){
+    public void jsonReqShikiProtect(final String url, JSONObject json, final Response.Listener<JSONObject> respList) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, json, respList,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                HashMap headers = new HashMap();
+                headers.put("UserShiki-Agent", "AniWatch");
+                headers.put("Authorization", "Bearer " + userShiki.accessToken);
+                return headers;
+            }
+        };
+        jsonObjectRequest.setTag("Api");
+        queue.add(jsonObjectRequest);
+
+    }
+
+    public void authInShiki(String authCode, Auth listener) {
         getShikiAuthTokens(false, authCode, listener);
 
     }
 
-    public void refreshShikiTokens(){
+    public void refreshShikiTokens() {
         getShikiAuthTokens(true, null, null);
     }
 
     private void getShikiAuthTokens(final boolean isRefresh, final String authCode, final Auth listener) {
-        Log.d("oauth", "getTokens isRefresh: "+isRefresh);
+        Log.d("oauth", "getTokens isRefresh: " + isRefresh);
         String url = Link.shikiUrl + "/oauth/token";
         Log.d("oauth", url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("oauth", "response: "+response);
-                        try{
+                        Log.d("oauth", "response: " + response);
+                        try {
                             JSONObject authData = new JSONObject(response);
                             userShiki.accessToken = authData.getString("access_token");
                             userShiki.refreshToken = authData.getString("refresh_token");
@@ -118,7 +140,7 @@ public class Api implements Serializable {
                                 getUserData();
                             if (listener != null)
                                 listener.onSuccess();
-                        } catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                             if (listener != null)
                                 listener.onError(response);
@@ -138,16 +160,17 @@ public class Api implements Serializable {
                 headers.put("UserShiki-Agent", "AniWatch");
                 return headers;
             }
+
             @Override
-            protected Map<String, String> getParams(){
-                Map<String, String>  params = new HashMap<>();
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
                 if (isRefresh) {
                     params.put("grant_type", "refresh_token");
                     params.put("refresh_token", userShiki.refreshToken);
-                }else {
+                } else {
                     params.put("grant_type", "authorization_code");
                     params.put("code", authCode);
-                    Log.d("oauth", "authCode: "+authCode);
+                    Log.d("oauth", "authCode: " + authCode);
                 }
                 params.put("client_id", CLIENT_ID);
                 params.put("client_secret", CLIENT_SECRET);
@@ -155,6 +178,7 @@ public class Api implements Serializable {
 
                 return params;
             }
+
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 Log.d("oauth", "headers: " + response.headers.get("X-Request-Id"));
@@ -165,39 +189,39 @@ public class Api implements Serializable {
         queue.add(stringRequest);
     }
 
-    public void getUserData(){
+    public void getUserData() {
         Log.d("request", "getUserData");
         Link link = new Link().shiki().whoami();
         ReqShikiProtect(link.get(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("response", "user: "+response);
-                try{
+                Log.d("response", "user: " + response);
+                try {
                     JSONObject data = new JSONObject(response);
                     userShiki.id = data.getInt("id");
                     userShiki.imageUrl = data.getJSONObject("image").getString("x48");
                     userShiki.nickname = data.getString("nickname");
                     userShiki.save(context);
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
 
-    public void getUserRates(final UserRates.Response listener){
+    public void getUserRates(final UserRates.Response listener) {
         Log.d("request", "getUserRates");
         Link link = new Link().shiki().userRates(userShiki.id);
         Log.d("link", link.get());
         ReqShikiProtect(link.get(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("response", "rates: "+response);
-                try{
+                Log.d("response", "rates: " + response);
+                try {
                     JSONArray rates = new JSONArray(response);
                     UserRates userRates = new UserRates(rates);
                     userRates.save(context);
-                } catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 listener.onResponse();
@@ -205,12 +229,13 @@ public class Api implements Serializable {
         });
     }
 
-    public boolean isShikiAuthenticated(){
+    public boolean isShikiAuthenticated() {
         return userShiki.accessToken != null && userShiki.refreshToken != null && userShiki.endDateTime != 0;
     }
 
-    public interface Auth{
+    public interface Auth {
         void onSuccess();
+
         void onError(String response);
     }
 }

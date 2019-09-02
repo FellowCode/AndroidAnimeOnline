@@ -49,4 +49,5 @@
     <string name="auth_on_shiki">Auth in Shikimori</string>
     <string name="auth_shiki_success">Success auth in shikimori!</string>
     <string name="my_score">My score</string>
+    <string name="add_in_list">Add in list</string>
 </resources>

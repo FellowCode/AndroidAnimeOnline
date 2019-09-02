@@ -71,8 +71,6 @@ public class WatchActivity extends AppCompatActivity {
 
     public ArrayList<TranslationsPageFragment> tabs = new ArrayList<>();
 
-    Favorites favorites;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

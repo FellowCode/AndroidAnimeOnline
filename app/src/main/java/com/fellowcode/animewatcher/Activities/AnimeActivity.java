@@ -9,12 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.JsonReader;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.bumptech.glide.Glide;
@@ -26,10 +33,13 @@ import com.fellowcode.animewatcher.Anime.Anime;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
 import com.fellowcode.animewatcher.Anime.AnimeRatings;
 import com.fellowcode.animewatcher.Anime.CharacterAdapter;
+import com.fellowcode.animewatcher.Anime.Episode;
 import com.fellowcode.animewatcher.Anime.Favorites;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.User.Rate;
+import com.fellowcode.animewatcher.User.UserShiki;
 import com.fellowcode.animewatcher.Utils.NavButtons;
 
 import org.json.JSONArray;
@@ -64,6 +74,10 @@ public class AnimeActivity extends AppCompatActivity {
     View progressBar;
     ArrayList<Boolean> requests = new ArrayList<>();
 
+    Spinner addInListSpinner;
+
+    int userRateId;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +103,30 @@ public class AnimeActivity extends AppCompatActivity {
         favoriteBtn = findViewById(R.id.favorite_btn);
         watchBtn = findViewById(R.id.watch_btn);
         progressBar = findViewById(R.id.progressBar);
+        addInListSpinner = findViewById(R.id.addInList);
+
+        myScoreEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    if (Integer.valueOf(myScoreEdit.getText().toString()) <= 10 && Integer.valueOf(myScoreEdit.getText().toString()) >= 0) {
+                        try {
+                            JSONObject json = new JSONObject();
+                            JSONObject userRate = new JSONObject().put("score", myScoreEdit.getText().toString());
+                            json.put("user_rate", userRate);
+                            editUserRate(userRate);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        myScoreEdit.setText("");
+                    }
+                    myScoreEdit.clearFocus();
+                }
+                return false;
+            }
+        });
 
         new NavButtons(this);
 
@@ -118,6 +156,7 @@ public class AnimeActivity extends AppCompatActivity {
         if (api.isShikiAuthenticated()){
             myScore.setVisibility(View.VISIBLE);
             getUserRateForAnime(anime.shikiId);
+            setupSpinner();
         }
     }
 
@@ -165,7 +204,7 @@ public class AnimeActivity extends AppCompatActivity {
 
     void getUserRateForAnime(int shikiId){
         showProgressBar();
-        Link link = new Link().shiki().userRate(shikiId);
+        Link link = new Link().shiki().userRate(shikiId, new UserShiki(this).id);
         Log.d("request", "getUserRateForAnime");
         Log.d("link", link.get());
         api.ReqShikiProtect(link.get(), new Response.Listener<String>() {
@@ -178,6 +217,9 @@ public class AnimeActivity extends AppCompatActivity {
                     Log.d("response", String.valueOf(score));
                     if (score > 0)
                         myScoreEdit.setText(String.valueOf(score));
+                    int selectIndex = Rate.findStatus(data.getString("status"));
+                    addInListSpinner.setSelection(selectIndex);
+                    userRateId = data.getInt("id");
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -287,5 +329,41 @@ public class AnimeActivity extends AppCompatActivity {
         requests.remove(0);
         if(requests.size() == 0)
             progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    void setupSpinner(){
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_rate_status, Rate.getStatusTitles());
+        addInListSpinner.setAdapter(adapter);
+        addInListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    JSONObject json = new JSONObject();
+                    JSONObject userRate = new JSONObject().put("status", Rate.getStatuses().get(position));
+                    json.put("user_rate", userRate);
+                    editUserRate(userRate);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    void editUserRate(JSONObject userRate){
+        Log.d("request", "editUserRate");
+        Link link = new Link().shiki().editUserRate(userRateId);
+        Log.d("link", link.get());
+        api.jsonReqShikiProtect(link.get(), userRate, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("response", "userRate: "+response.toString());
+            }
+        });
+
     }
 }
