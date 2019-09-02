@@ -23,6 +23,8 @@ public class Anime implements Serializable {
     public String posterUrlSmall;
     public String posterUrl;
 
+    public String rateStatus = "none";
+
     public Anime(JSONObject anime) throws JSONException {
         ParseSmAnime(anime);
     }

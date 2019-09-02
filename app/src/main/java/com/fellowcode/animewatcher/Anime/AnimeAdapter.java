@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fellowcode.animewatcher.Activities.AnimeActivity;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.User.UserRates;
 
 import java.util.ArrayList;
 
@@ -29,12 +31,12 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
     ArrayList<Anime> list;
     Context context;
 
-    public AnimeAdapter(ArrayList<Anime> list){
+    public AnimeAdapter(ArrayList<Anime> list) {
         this.list = list;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.item_anime, parent, false);
@@ -42,7 +44,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position){
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,13 +57,14 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
     }
 
     @Override
-    public int getItemCount(){
+    public int getItemCount() {
         return list.size();
     }
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
+        ImageView rateStatus;
         TextView title;
         TextView type;
         TextView year;
@@ -71,9 +74,10 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
         View loader;
 
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
+            rateStatus = itemView.findViewById(R.id.statusRate);
             title = itemView.findViewById(R.id.title);
             type = itemView.findViewById(R.id.type);
             year = itemView.findViewById(R.id.year);
@@ -82,8 +86,8 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
             loader = itemView.findViewById(R.id.loader);
         }
 
-        public void bind(Anime anime, View.OnClickListener listener){
-            image.layout(0,0,0,0);
+        public void bind(Anime anime, View.OnClickListener listener) {
+            image.layout(0, 0, 0, 0);
             Glide.get(context).setMemoryCategory(MemoryCategory.HIGH);
             Glide.with(context)
                     .load(anime.posterUrlSmall)
@@ -109,6 +113,22 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
                 score.setVisibility(View.INVISIBLE);
             else
                 score.setText(anime.myAnimeListScore);
+
+            if(anime.russian.equals("Син-тян"))
+                Log.d("test", anime.russian);
+            if (anime.rateStatus == null)
+                Log.d("test", anime.russian);
+            else if (!anime.rateStatus.equals("none"))
+                if (UserRates.getIcon(anime.rateStatus) != 0)
+                    rateStatus.setImageResource(UserRates.getIcon(anime.rateStatus));
+                else {
+                    rateStatus.setImageResource(R.drawable.dropped);
+                    rateStatus.setVisibility(View.INVISIBLE);
+                }
+            else {
+                rateStatus.setImageResource(R.drawable.dropped);
+                rateStatus.setVisibility(View.INVISIBLE);
+            }
 
             year.setText(String.valueOf(anime.year));
 

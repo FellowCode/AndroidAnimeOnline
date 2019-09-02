@@ -10,6 +10,7 @@ import android.view.View;
 import com.android.volley.Response;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
+import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.Utils.Serialize;
 
 import org.json.JSONArray;
@@ -18,16 +19,21 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class AnimeList implements Serializable {
+    public interface Request{
+        Link getUrl();
+        void onResponse(String response);
+    }
+
+
     private ArrayList<Anime> animes = new ArrayList<>();
     private ArrayList<Anime> searches = new ArrayList<>();
     private boolean isSearch;
     private AnimeAdapter adapter;
     private RecyclerView recyclerView;
     public boolean currReq = false;
-    private AnimeListRequest request;
+    private Request request;
 
     private Api api;
     private Context context;
@@ -36,15 +42,14 @@ public class AnimeList implements Serializable {
 
     private int ANIME_LIMIT = 20;
 
-    public AnimeList() {
-        adapter = new AnimeAdapter(animes);
-    }
+    UserRates rateStatus;
 
     public AnimeList(Context context, Api api, RecyclerView recyclerView){
         adapter = new AnimeAdapter(animes);
         setContext(context);
         setApi(api);
         setRecyclerView(recyclerView);
+        rateStatus = new UserRates(context);
     }
 
     public AnimeList setApi(Api api){
@@ -65,7 +70,7 @@ public class AnimeList implements Serializable {
         return this;
     }
 
-    public AnimeList setRequest(AnimeListRequest request) {
+    public AnimeList setRequest(Request request) {
         this.request = request;
         return this;
     }
@@ -86,7 +91,7 @@ public class AnimeList implements Serializable {
                     animes.addAll(ParseAnimesShiki(response));
                 else
                     animes.addAll(ParseAnimes(response));
-                adapter.notifyDataSetChanged();
+                updateUserRates();
                 currReq = false;
                 if (animes.size()>0)
                     recyclerView.setVisibility(View.VISIBLE);
@@ -206,5 +211,28 @@ public class AnimeList implements Serializable {
 
         if (animes.size()>0)
             recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    public void setUserRates(UserRates rateStatus){
+        this.rateStatus = rateStatus;
+        updateUserRates();
+    }
+
+    public void updateUserRates(){
+        Log.d("function", "updateUserRates in animeList");
+        for (int i=0;i<animes.size();i++){
+            animes.get(i).rateStatus = null;
+            for (int j = 0; j< rateStatus.rates.size(); j++){
+                if (animes.get(i).shikiId == rateStatus.rates.get(j).animeId){
+                    animes.get(i).rateStatus = rateStatus.rates.get(j).status;
+                }
+                if (rateStatus.rates.get(i).status == null)
+                    Log.d("test", "ratestatus is null");
+            }
+        }
+        if (animes.size() > 0 && rateStatus.rates.size()>0) {
+            Log.d("function", "updateUserRates notifyChange");
+            adapter.notifyDataSetChanged();
+        }
     }
 }

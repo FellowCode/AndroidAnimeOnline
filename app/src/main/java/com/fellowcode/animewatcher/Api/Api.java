@@ -14,8 +14,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.User.UserShiki;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -183,10 +185,24 @@ public class Api implements Serializable {
         });
     }
 
-    public void getUserRates(final Response.Listener<String> listener){
-        Log.d("request", "getUserData");
+    public void getUserRates(final UserRates.Response listener){
+        Log.d("request", "getUserRates");
         Link link = new Link().shiki().userRates(userShiki.id);
-        ReqShikiProtect(link.get(), listener);
+        Log.d("link", link.get());
+        ReqShikiProtect(link.get(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("response", "rates: "+response);
+                try{
+                    JSONArray rates = new JSONArray(response);
+                    UserRates userRates = new UserRates(rates);
+                    userRates.save(context);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+                listener.onResponse();
+            }
+        });
     }
 
     public boolean isShikiAuthenticated(){

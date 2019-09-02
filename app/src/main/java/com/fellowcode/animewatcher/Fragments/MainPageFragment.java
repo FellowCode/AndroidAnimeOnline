@@ -15,12 +15,10 @@ import com.fellowcode.animewatcher.Activities.MainActivity;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
 import com.fellowcode.animewatcher.Anime.AnimeList;
-import com.fellowcode.animewatcher.Anime.AnimeListRequest;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
+import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.Utils.Page;
-
-import java.util.Objects;
 
 public class MainPageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -31,6 +29,7 @@ public class MainPageFragment extends Fragment {
     RecyclerView recyclerView;
     Api api;
     Context context;
+    MainActivity mainActivity;
 
     public static MainPageFragment newInstance(int page){
         Bundle args = new Bundle();
@@ -45,7 +44,9 @@ public class MainPageFragment extends Fragment {
         if (getArguments() != null) {
             mPage = getArguments().getInt(ARG_PAGE);
         }
-        api = ((MainActivity) Objects.requireNonNull(getActivity())).api;
+        mainActivity = (MainActivity)getActivity();
+        assert mainActivity != null;
+        api = mainActivity.api;
         context = getContext();
     }
 
@@ -53,10 +54,10 @@ public class MainPageFragment extends Fragment {
                                        Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.template_recycler, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(mainActivity, 2));
         recyclerView.addItemDecoration(new AnimeItemDecoration(25));
 
-        animeList = new AnimeList().setContext(context).setApi(api).setRecyclerView(recyclerView);
+        animeList = new AnimeList(context, api, recyclerView);
         if (mPage == Page.ONGOINGS) {
             //animeList.Load("ongoings");
             SetupOngoingsList();
@@ -67,10 +68,12 @@ public class MainPageFragment extends Fragment {
         if (animeList.size() == 0)
             animeList.loadAnimes();
 
+        mainActivity.animeLists.add(animeList);
+
         return view;
     }
     void SetupOngoingsList(){
-        animeList.setRequest(new AnimeListRequest() {
+        animeList.setRequest(new AnimeList.Request() {
             @Override
             public Link getUrl() {
                 Log.d("request", "ReqOngoingsList");
@@ -87,7 +90,7 @@ public class MainPageFragment extends Fragment {
 
 
     void SetupAllAnimesList(){
-        animeList.setRequest(new AnimeListRequest() {
+        animeList.setRequest(new AnimeList.Request() {
             @Override
             public Link getUrl() {
                 Log.d("request", "ReqAllAnimes");
@@ -100,6 +103,10 @@ public class MainPageFragment extends Fragment {
                 animeList.Save("allAnimes");
             }
         });
+    }
+
+    public void setUserRates(UserRates userRates){
+        animeList.setUserRates(userRates);
     }
 
 }

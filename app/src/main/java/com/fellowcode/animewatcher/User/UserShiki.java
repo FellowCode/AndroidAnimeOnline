@@ -33,6 +33,6 @@ public class UserShiki implements Serializable {
     }
 
     public void save(Context context){
-        Serialize.write(context, "userShiki", this);
+        Serialize.write(context,"userShiki", this);
     }
 }

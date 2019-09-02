@@ -11,7 +11,6 @@ import android.view.View;
 
 import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
 import com.fellowcode.animewatcher.Anime.AnimeList;
-import com.fellowcode.animewatcher.Anime.AnimeListRequest;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
@@ -60,7 +59,7 @@ public class AnimeFilteredActivity extends AppCompatActivity {
         link.animes();
         progressBar.setVisibility(View.VISIBLE);
         listEmpty.setVisibility(View.INVISIBLE);
-        animeList.setRequest(new AnimeListRequest() {
+        animeList.setRequest(new AnimeList.Request() {
             @Override
             public Link getUrl() {
                 Log.d("request", "ReqFilter");

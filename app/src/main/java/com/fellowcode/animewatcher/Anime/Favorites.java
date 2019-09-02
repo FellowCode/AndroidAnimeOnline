@@ -13,7 +13,7 @@ public class Favorites {
 
     public Favorites(Context context) {
         this.context = context;
-        favorites = Serialize.read(context, "favorites");
+        favorites = Serialize.read(context,"favorites");
         if (favorites == null)
             favorites = new ArrayList<>();
     }

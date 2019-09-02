@@ -25,7 +25,7 @@ public class TranslationsPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override public Fragment getItem(int position) {
-        return TranslationsPageFragment.newInstance(position + 1);
+        return TranslationsPageFragment.newInstance(position);
     }
     @Override public CharSequence getPageTitle(int position) {
         // генерируем заголовок в зависимости от позиции

@@ -3,12 +3,15 @@ package com.fellowcode.animewatcher.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Rate{
-    int id;
-    int score;
-    String status;
-    int episodes;
-    int rewatches;
+import java.io.Serializable;
+
+public class Rate implements Serializable {
+    public int id;
+    public int score;
+    public String status = "none";
+    public int episodes;
+    public int rewatches;
+    public int animeId;
 
     public Rate(JSONObject rate) throws JSONException {
         Parse(rate);
@@ -20,5 +23,6 @@ public class Rate{
         status = rate.getString("status");
         episodes = rate.getInt("episodes");
         rewatches = rate.getInt("rewatches");
+        animeId = rate.getJSONObject("anime").getInt("id");
     }
 }

@@ -76,7 +76,7 @@ public class Link implements Serializable {
     }
 
     public Link userRates(int userId){
-        url = "users/"+userId+"/anime_rates";
+        url = "users/"+userId+"/anime_rates?limit=10000&page=1";
         return this;
     }
 

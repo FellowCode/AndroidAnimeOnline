@@ -1,5 +1,6 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -19,14 +20,22 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.fellowcode.animewatcher.Anime.AnimeList;
 import com.fellowcode.animewatcher.Api.Api;
+import com.fellowcode.animewatcher.Fragments.MainPageFragment;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.Utils.NavButtons;
 import com.fellowcode.animewatcher.Utils.MainPagerAdapter;
+import com.fellowcode.animewatcher.Utils.TimeConvert;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,10 +54,18 @@ public class MainActivity extends AppCompatActivity {
     SearchView searchView;
     MenuItem searchItem;
 
+    Context context = this;
+
+    public ArrayList<AnimeList> animeLists = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        Set<String> intentCategories = intent.getCategories();
+        boolean startedFromLauncher = Intent.ACTION_MAIN.equals(intent.getAction()) && intentCategories != null && intentCategories.contains(Intent.CATEGORY_LAUNCHER);
 
         api = new Api(this);
 
@@ -82,7 +99,18 @@ public class MainActivity extends AppCompatActivity {
 
         checkDate();
 
-        if (api.isShikiAuthenticated())
+
+        if (api.isShikiAuthenticated()){
+            if (startedFromLauncher || new UserRates(context).rates.size() == 0) {
+                api.getUserRates(new UserRates.Response() {
+                    @Override
+                    public void onResponse() {
+                        for (int i=0;i<animeLists.size();i++)
+                            animeLists.get(i).setUserRates(new UserRates(context));
+                    }
+                });
+            }
+        }
 
     }
 

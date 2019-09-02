@@ -1,6 +1,5 @@
 package com.fellowcode.animewatcher.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,7 +14,6 @@ import android.view.View;
 
 import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
 import com.fellowcode.animewatcher.Anime.AnimeList;
-import com.fellowcode.animewatcher.Anime.AnimeListRequest;
 import com.fellowcode.animewatcher.Anime.Favorites;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
@@ -136,7 +134,7 @@ public class FavoritesActivity extends AppCompatActivity {
         if(favorites.getShikiIdsList().size()>0) {
             progressBar.setVisibility(View.VISIBLE);
             listEmpty.setVisibility(View.INVISIBLE);
-            animeList.setRequest(new AnimeListRequest() {
+            animeList.setRequest(new AnimeList.Request() {
                 @Override
                 public Link getUrl() {
                     Log.d("request", "ReqFavorites");
