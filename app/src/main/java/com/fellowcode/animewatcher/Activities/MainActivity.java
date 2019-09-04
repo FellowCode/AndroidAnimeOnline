@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,7 +36,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,18 +103,29 @@ public class MainActivity extends AppCompatActivity {
         checkDate();
 
 
-        if (api.isShikiAuthenticated()){
+        if (api.isShikiAuthenticated()) {
             if (startedFromLauncher || new UserRates(context).rates.size() == 0) {
-                api.getUserRates(new UserRates.Response() {
+                api.refreshShikiTokens(new Api.Auth() {
                     @Override
-                    public void onResponse() {
-                        for (int i=0;i<animeLists.size();i++)
-                            animeLists.get(i).setUserRates(new UserRates(context));
+                    public void onSuccess() {
+                        api.getUserRates(new UserRates.Response() {
+                            @Override
+                            public void onResponse() {
+                                for (int i = 0; i < animeLists.size(); i++)
+                                    animeLists.get(i).setUserRates(new UserRates(context));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(String response) {
+
                     }
                 });
+
+
             }
         }
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,15 +188,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response", response);
-                        try{
+                        try {
                             String currentDate = new JSONObject(response).getString("currentDateTime").split("T")[0];
                             int year = Integer.valueOf(currentDate.split("-")[0]);
                             int month = Integer.valueOf(currentDate.split("-")[1]);
                             int day = Integer.valueOf(currentDate.split("-")[2]);
-                            if (year > 2019 || (month > 8 && day > 15)){
+                            if (year > 2019 || (month > 8 && day > 15)) {
                                 finish();
                             }
-                        } catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
 

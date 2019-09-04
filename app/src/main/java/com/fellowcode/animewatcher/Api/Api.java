@@ -15,6 +15,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.User.Rate;
 import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.User.UserShiki;
 
@@ -35,7 +36,7 @@ public class Api implements Serializable {
     static String CLIENT_SECRET = "bb95386ff0d2afaf30ba6fd5bad16fee9a8ee6c8840e2145f2f715e6678b0b5b";
     public static String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
 
-    UserShiki userShiki;
+    public UserShiki userShiki;
 
     public Api(Context context) {
         queue = Volley.newRequestQueue(context);
@@ -119,6 +120,10 @@ public class Api implements Serializable {
 
     public void refreshShikiTokens() {
         getShikiAuthTokens(true, null, null);
+    }
+
+    public void refreshShikiTokens(Auth listener) {
+        getShikiAuthTokens(true, null, listener);
     }
 
     private void getShikiAuthTokens(final boolean isRefresh, final String authCode, final Auth listener) {
@@ -207,6 +212,20 @@ public class Api implements Serializable {
                 }
             }
         });
+    }
+
+    public void setEpisodeWatched(int rateId, int episodeNum, Response.Listener<JSONObject> listener){
+        Link link = new Link().shiki().editUserRate(rateId);
+
+        try {
+            JSONObject json = new JSONObject();
+            JSONObject userRate = new JSONObject().put("episodes", String.valueOf(episodeNum));
+            json.put("user_rate", userRate);
+            jsonReqShikiProtect(link.get(), json, listener);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
     }
 
     public void getUserRates(final UserRates.Response listener) {

@@ -260,6 +260,10 @@ public class WatchActivity extends AppCompatActivity {
         }
     }
 
+    public void episodeWatchedClick(View v){
+
+    }
+
     public void changeEpisode(){
         for(int i=0;i<tabs.size();i++)
             tabs.get(i).hideList();
