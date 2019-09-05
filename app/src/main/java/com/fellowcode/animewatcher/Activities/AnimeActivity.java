@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.bumptech.glide.Glide;
@@ -32,8 +30,7 @@ import com.bumptech.glide.request.target.Target;
 import com.fellowcode.animewatcher.Anime.Anime;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
 import com.fellowcode.animewatcher.Anime.AnimeRatings;
-import com.fellowcode.animewatcher.Anime.CharacterAdapter;
-import com.fellowcode.animewatcher.Anime.Episode;
+import com.fellowcode.animewatcher.Adapters.CharacterAdapter;
 import com.fellowcode.animewatcher.Anime.Favorites;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
@@ -63,7 +60,7 @@ public class AnimeActivity extends AppCompatActivity {
 
     RecyclerView charactersView;
 
-    View myScore;
+    View userListParams;
     EditText myScoreEdit;
 
     ImageView favoriteBtn;
@@ -87,7 +84,7 @@ public class AnimeActivity extends AppCompatActivity {
         title = findViewById(R.id.title);
         title_romaji = findViewById(R.id.title_romaji);
         genres = findViewById(R.id.genres);
-        type = findViewById(R.id.type);
+        type = findViewById(R.id.qualityType);
         score = findViewById(R.id.score);
         rating = findViewById(R.id.rating);
         description = findViewById(R.id.description);
@@ -98,7 +95,7 @@ public class AnimeActivity extends AppCompatActivity {
         released_layout = findViewById(R.id.released_layout);
         studio = findViewById(R.id.studio);
         loader = findViewById(R.id.loader);
-        myScore = findViewById(R.id.my_score);
+        userListParams = findViewById(R.id.userListParams);
         myScoreEdit = findViewById(R.id.my_score_edit);
         favoriteBtn = findViewById(R.id.favorite_btn);
         watchBtn = findViewById(R.id.watch_btn);
@@ -160,7 +157,7 @@ public class AnimeActivity extends AppCompatActivity {
         UpdateFiledsShiki();
 
         if (api.isShikiAuthenticated()){
-            myScore.setVisibility(View.VISIBLE);
+            userListParams.setVisibility(View.VISIBLE);
             getUserRateForAnime(anime.shikiId);
             setupSpinner();
         }
@@ -220,9 +217,8 @@ public class AnimeActivity extends AppCompatActivity {
                 try{
                     JSONObject data = new JSONArray(response).getJSONObject(0);
                     rate = new Rate(data);
-
                     if (rate.score > 0)
-                        myScoreEdit.setText(String.valueOf(score));
+                        myScoreEdit.setText(String.valueOf(rate.score));
                     int selectIndex = Rate.findStatus(rate.status);
                     addInListSpinner.setSelection(selectIndex);
 

@@ -1,7 +1,6 @@
 package com.fellowcode.animewatcher.User;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -10,13 +9,8 @@ import com.fellowcode.animewatcher.Utils.Serialize;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserRates {
 
@@ -28,7 +22,7 @@ public class UserRates {
 
     public ArrayList<Rate> rates;
 
-    public ArrayList<Long> plannedIds, watchingIds, completedIds, droppedIds, holdOnIds;
+    public ArrayList<Integer> plannedIds, watchingIds, completedIds, droppedIds, onHoldIds;
 
 
     public UserRates(Context context) {
@@ -77,20 +71,19 @@ public class UserRates {
         watchingIds = new ArrayList<>();
         completedIds = new ArrayList<>();
         droppedIds = new ArrayList<>();
-        holdOnIds = new ArrayList<>();
+        onHoldIds = new ArrayList<>();
         for (int i=0; i<rates.size(); i++){
-            Log.d("test", rates.get(i).status);
             if (rates.get(i).status.equals("planned")){
-                plannedIds.add(rates.get(i).id);
+                plannedIds.add(rates.get(i).animeId);
             } else if (rates.get(i).status.equals("watching")
                     || rates.get(i).status.equals("rewatching")){
-                watchingIds.add(rates.get(i).id);
+                watchingIds.add(rates.get(i).animeId);
             } else if (rates.get(i).status.equals("completed")){
-                completedIds.add(rates.get(i).id);
+                completedIds.add(rates.get(i).animeId);
             } else if (rates.get(i).status.equals("dropped")){
-                droppedIds.add(rates.get(i).id);
+                droppedIds.add(rates.get(i).animeId);
             } else if (rates.get(i).status.equals("on_hold")){
-                holdOnIds.add(rates.get(i).id);
+                onHoldIds.add(rates.get(i).animeId);
             }
         }
     }

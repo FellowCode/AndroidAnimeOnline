@@ -46,7 +46,7 @@ public class Anime implements Serializable {
         return this;
     }
 
-    String getTitle(String lang) {
+    public String getTitle(String lang) {
         if (lang.equals("ru"))
             return russian;
         if (lang.equals("en"))

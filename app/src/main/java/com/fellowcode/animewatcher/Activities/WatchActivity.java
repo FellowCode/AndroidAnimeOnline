@@ -2,8 +2,6 @@ package com.fellowcode.animewatcher.Activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,29 +22,21 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
 import com.fellowcode.animewatcher.Anime.Episode;
-import com.fellowcode.animewatcher.Anime.Favorites;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.Fragments.TranslationsPageFragment;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.User.Rate;
 import com.fellowcode.animewatcher.Utils.NavButtons;
-import com.fellowcode.animewatcher.Utils.Serialize;
-import com.fellowcode.animewatcher.Utils.TranslationsPagerAdapter;
+import com.fellowcode.animewatcher.Adapters.TranslationsPagerAdapter;
 import com.fellowcode.animewatcher.Utils.VideoEnabledWebChromeClient;
 import com.fellowcode.animewatcher.Utils.VideoEnabledWebView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class WatchActivity extends AppCompatActivity {
 
@@ -67,7 +56,6 @@ public class WatchActivity extends AppCompatActivity {
     public AnimeAdvanced anime;
 
     public Episode currentEpisode;
-    int episodeIndex = 0;
     EditText episodeEdit;
 
     public ArrayList<TranslationsPageFragment> tabs = new ArrayList<>();
@@ -144,14 +132,14 @@ public class WatchActivity extends AppCompatActivity {
             rate = (Rate) getIntent().getSerializableExtra("rate");
             if (rate.episodes < anime.numberOfEpisodes && !anime.type.equals("movie")) {
                 currentEpisode = anime.getEpisodeByInt(String.valueOf(rate.episodes + 1));
+            } else {
+                currentEpisode = anime.episodes.get(0);
             }
         } else {
-            currentEpisode = anime.episodes.get(episodeIndex);
+            currentEpisode = anime.episodes.get(0);
         }
         episodeEdit.setText(currentEpisode.episodeInt);
         loadTranslations(currentEpisode.id);
-
-
     }
 
     void setupWebView(){
@@ -203,6 +191,7 @@ public class WatchActivity extends AppCompatActivity {
 
             }
         });
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         webView.setWebChromeClient(webChromeClient);
         webView.setWebViewClient(new WebViewClient(){
             public void onPageFinished(WebView view, String url) {
@@ -261,7 +250,8 @@ public class WatchActivity extends AppCompatActivity {
     }
 
     public void decEpisodeClick(View v){
-        if (episodeIndex >0) {
+        int episodeIndex = anime.getEpisodeIndexByInt(episodeEdit.getText().toString());
+        if (episodeIndex > 0) {
             episodeIndex--;
             currentEpisode = anime.episodes.get(episodeIndex);
             changeEpisode();
@@ -269,6 +259,7 @@ public class WatchActivity extends AppCompatActivity {
     }
 
     public void incEpisodeClick(View v){
+        int episodeIndex = anime.getEpisodeIndexByInt(episodeEdit.getText().toString());
         if (episodeIndex < anime.episodes.size()) {
             episodeIndex++;
             currentEpisode = anime.episodes.get(episodeIndex);
@@ -290,6 +281,7 @@ public class WatchActivity extends AppCompatActivity {
             JSONObject json = new JSONObject();
             JSONObject userRate = new JSONObject().put("episodes", currentEpisode.episodeInt);
             json.put("user_rate", userRate);
+            Log.d("request", "user_rate: "+json);
             api.jsonReqShikiProtect(link.get(), json, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.android.volley.Response;
+import com.fellowcode.animewatcher.Adapters.AnimeAdapter;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.User.UserRates;
@@ -64,6 +65,8 @@ public class AnimeList implements Serializable {
 
     public AnimeList setRecyclerView(RecyclerView recycler){
         recyclerView = recycler;
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+        recyclerView.addItemDecoration(new AnimeItemDecoration(25));
         recyclerView.setAdapter(adapter);
         recyclerView.setVisibility(View.INVISIBLE);
         recyclerScrollSetup();

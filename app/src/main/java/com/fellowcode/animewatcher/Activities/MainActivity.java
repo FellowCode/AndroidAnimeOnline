@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,22 +22,17 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fellowcode.animewatcher.Anime.AnimeList;
 import com.fellowcode.animewatcher.Api.Api;
-import com.fellowcode.animewatcher.Fragments.MainPageFragment;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.Utils.NavButtons;
-import com.fellowcode.animewatcher.Utils.MainPagerAdapter;
-import com.fellowcode.animewatcher.Utils.TimeConvert;
+import com.fellowcode.animewatcher.Adapters.MainPagerAdapter;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Set;
-import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -161,17 +155,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        if (item.getItemId() == R.id.settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     void Search(String query) {

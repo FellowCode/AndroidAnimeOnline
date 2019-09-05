@@ -15,8 +15,6 @@ import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.User.UserShiki;
 import com.fellowcode.animewatcher.Utils.NavButtons;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -69,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
                     watchingCount.setText(String.valueOf(userRates.watchingIds.size()));
                     completedCount.setText(String.valueOf(userRates.completedIds.size()));
                     droppedCount.setText(String.valueOf(userRates.droppedIds.size()));
-                    holdOnCount.setText(String.valueOf(userRates.holdOnIds.size()));
+                    holdOnCount.setText(String.valueOf(userRates.onHoldIds.size()));
 
                 }
             });
@@ -81,23 +79,23 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void plannedClick(View v){
-
+        openAnimeList("planned", userRates.plannedIds);
     }
 
     public void watchingClick(View v){
-
+        openAnimeList("watching", userRates.watchingIds);
     }
 
     public void completedClick(View v){
-
+        openAnimeList("completed", userRates.completedIds);
     }
 
     public void droppedClick(View v){
-
+        openAnimeList("dropped", userRates.droppedIds);
     }
 
-    public void holdOnClick(View v){
-
+    public void onHoldClick(View v){
+        openAnimeList("on_hold", userRates.onHoldIds);
     }
 
     public void authShikiClick(View v){
@@ -117,5 +115,12 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
         startActivity(intent);
 
+    }
+
+    void openAnimeList(String status, ArrayList<Integer> ids){
+        Intent intent = new Intent(this, UserAnimeListActivity.class);
+        intent.putExtra("status", status);
+        intent.putExtra("animeIds", ids);
+        startActivity(intent);
     }
 }

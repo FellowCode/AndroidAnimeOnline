@@ -13,12 +13,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.fellowcode.animewatcher.Activities.WatchActivity;
-import com.fellowcode.animewatcher.Anime.Anime;
+import com.fellowcode.animewatcher.Adapters.TranslationAdapter;
 import com.fellowcode.animewatcher.Anime.Episode;
 import com.fellowcode.animewatcher.Anime.Translation;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.R;
-import com.fellowcode.animewatcher.Utils.TranslationsPage;
+import com.fellowcode.animewatcher.Adapters.TranslationsPage;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -75,13 +75,7 @@ public class TranslationsPageFragment extends Fragment {
             tr = episode.getRawTranslations();
         }
 
-        ArrayList<String> trNames = new ArrayList<>();
-        for (int i=0;i<tr.size();i++){
-            trNames.add(tr.get(i).getSummary());
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_list_item_1, trNames);
-
+        TranslationAdapter adapter = new TranslationAdapter(context, tr);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

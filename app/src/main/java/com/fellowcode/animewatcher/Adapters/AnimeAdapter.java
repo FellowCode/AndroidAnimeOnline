@@ -1,13 +1,11 @@
-package com.fellowcode.animewatcher.Anime;
+package com.fellowcode.animewatcher.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +20,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fellowcode.animewatcher.Activities.AnimeActivity;
+import com.fellowcode.animewatcher.Anime.Anime;
+import com.fellowcode.animewatcher.Anime.AnimeTypes;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.User.UserRates;
 
@@ -92,7 +92,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
             image = itemView.findViewById(R.id.image);
             rateStatus = itemView.findViewById(R.id.statusRate);
             title = itemView.findViewById(R.id.title);
-            type = itemView.findViewById(R.id.type);
+            type = itemView.findViewById(R.id.qualityType);
             year = itemView.findViewById(R.id.year);
             score = itemView.findViewById(R.id.score);
             cardView = itemView.findViewById(R.id.card_view);

@@ -68,4 +68,8 @@ public class Rate implements Serializable {
         }
         return -1;
     }
+
+    public static String getTitle(String status){
+        return getStatusTitles().get(findStatus(status));
+    }
 }

@@ -107,7 +107,7 @@
                                     android:text="@string/type_colon" />
 
                                 <TextView
-                                    android:id="@+id/type"
+                                    android:id="@+id/qualityType"
                                     style="@style/AnimeFieldValue"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
@@ -247,39 +247,45 @@
                             android:paddingBottom="5dp"
                             android:textSize="16sp" />
 
-                        <Spinner
-                            android:layout_marginTop="10dp"
-                            android:id="@+id/addInList"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"/>
                         <LinearLayout
-                            android:id="@+id/my_score"
-                            android:layout_marginTop="10dp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:visibility="visible">
-
-                            <TextView
+                            android:orientation="vertical"
+                            android:id="@+id/userListParams"
+                            android:visibility="gone">
+                            <Spinner
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/addInList"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="20sp"
-                                android:text="@string/my_score"/>
-                            <EditText
-                                android:id="@+id/my_score_edit"
-                                android:layout_marginStart="10dp"
-                                android:layout_width="35dp"
+                                android:layout_gravity="center"/>
+                            <LinearLayout
+                                android:id="@+id/my_score"
+                                android:layout_marginTop="10dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/filter_input"
-                                android:textSize="20sp"
-                                android:paddingStart="5dp"
-                                android:paddingEnd="5dp"
-                                android:imeOptions="actionDone"
-                                android:digits="0123456789"
-                                android:inputType="number"/>
-                        </LinearLayout>
+                                android:layout_gravity="center"
+                                android:visibility="visible">
 
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="20sp"
+                                    android:text="@string/my_score"/>
+                                <EditText
+                                    android:id="@+id/my_score_edit"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_width="35dp"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/filter_input"
+                                    android:textSize="20sp"
+                                    android:paddingStart="5dp"
+                                    android:paddingEnd="5dp"
+                                    android:imeOptions="actionDone"
+                                    android:digits="0123456789"
+                                    android:inputType="number"/>
+                            </LinearLayout>
+                        </LinearLayout>
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -330,6 +336,7 @@
                                     android:textSize="18sp"/>
                             </LinearLayout>
                         </LinearLayout>
+
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 

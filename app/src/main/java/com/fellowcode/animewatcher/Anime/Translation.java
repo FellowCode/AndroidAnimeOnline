@@ -9,12 +9,12 @@ public class Translation implements Serializable {
     int id;
     int priority;
     int countViews;
-    int height;
-    String qualityType;
+    public int height;
+    public String qualityType;
     String type;
     String typeKind;
     String typeLang;
-    String authorsSummary;
+    public String authorsSummary;
     public String embedUrl;
 
     public Translation(JSONObject translation) throws JSONException {

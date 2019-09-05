@@ -43,8 +43,6 @@ public class AnimeFilteredActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.loader);
 
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.addItemDecoration(new AnimeItemDecoration(15));
 
         animeList = new AnimeList(this, api, recyclerView);
 

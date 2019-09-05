@@ -66,8 +66,6 @@ public class SearchActivity extends AppCompatActivity {
         api = new Api(this);
 
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.addItemDecoration(new AnimeItemDecoration(25));
 
         animeList = new AnimeList(this, api, recyclerView);
 

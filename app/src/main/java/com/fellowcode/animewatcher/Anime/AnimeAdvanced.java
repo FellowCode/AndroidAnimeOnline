@@ -148,4 +148,12 @@ public class AnimeAdvanced extends Anime implements Serializable {
         return null;
     }
 
+    public int getEpisodeIndexByInt(String number){
+        for (int i=0; i<episodes.size(); i++){
+            if (episodes.get(i).episodeInt.equals(number))
+                return i;
+        }
+        return -1;
+    }
+
 }

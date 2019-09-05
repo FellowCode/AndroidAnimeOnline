@@ -1,4 +1,4 @@
-package com.fellowcode.animewatcher.Utils;
+package com.fellowcode.animewatcher.Adapters;
 
 public interface TranslationsPage {
     int VOICE = 0;

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +12,11 @@ import android.view.ViewGroup;
 
 import com.fellowcode.animewatcher.Activities.MainActivity;
 import com.fellowcode.animewatcher.R;
-import com.fellowcode.animewatcher.Anime.AnimeItemDecoration;
 import com.fellowcode.animewatcher.Anime.AnimeList;
 import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.User.UserRates;
-import com.fellowcode.animewatcher.Utils.Page;
+import com.fellowcode.animewatcher.Adapters.MainPage;
 
 public class MainPageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -54,14 +52,12 @@ public class MainPageFragment extends Fragment {
                                        Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.template_recycler, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(mainActivity, 2));
-        recyclerView.addItemDecoration(new AnimeItemDecoration(25));
 
         animeList = new AnimeList(context, api, recyclerView);
-        if (mPage == Page.ONGOINGS) {
+        if (mPage == MainPage.ONGOINGS) {
             //animeList.Load("ongoings");
             SetupOngoingsList();
-        } else if (mPage == Page.ALL_ANIMES) {
+        } else if (mPage == MainPage.ALL_ANIMES) {
             //animeList.Load("allAnimes");
             SetupAllAnimesList();
         }
