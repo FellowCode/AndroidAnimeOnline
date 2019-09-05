@@ -76,7 +76,7 @@ public class AnimeActivity extends AppCompatActivity {
 
     Spinner addInListSpinner;
 
-    int userRateId;
+    Rate rate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,8 +141,14 @@ public class AnimeActivity extends AppCompatActivity {
 
         api = new Api(this);
 
-        Anime a = (Anime) getIntent().getSerializableExtra("anime");
-        anime = new AnimeAdvanced(a);
+        if (getIntent().hasExtra("anime")) {
+            Anime a = (Anime) getIntent().getSerializableExtra("anime");
+            anime = new AnimeAdvanced(a);
+        }
+        if (getIntent().hasExtra("animeAdvanced")){
+            anime = (AnimeAdvanced)getIntent().getSerializableExtra("animeAdvanced");
+        }
+
 
         if (favorites.checkIn(anime))
             favoriteBtn.setImageResource(R.drawable.ic_star_fill);
@@ -213,13 +219,13 @@ public class AnimeActivity extends AppCompatActivity {
                 Log.d("response", response);
                 try{
                     JSONObject data = new JSONArray(response).getJSONObject(0);
-                    int score = data.getInt("score");
-                    Log.d("response", String.valueOf(score));
-                    if (score > 0)
+                    rate = new Rate(data);
+
+                    if (rate.score > 0)
                         myScoreEdit.setText(String.valueOf(score));
-                    int selectIndex = Rate.findStatus(data.getString("status"));
+                    int selectIndex = Rate.findStatus(rate.status);
                     addInListSpinner.setSelection(selectIndex);
-                    userRateId = data.getInt("id");
+
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -317,6 +323,8 @@ public class AnimeActivity extends AppCompatActivity {
     public void watchAnime(View v){
         Intent intent = new Intent(this, WatchActivity.class);
         intent.putExtra("anime", anime);
+        if (rate != null)
+            intent.putExtra("rate", rate);
         startActivity(intent);
     }
 
@@ -337,13 +345,16 @@ public class AnimeActivity extends AppCompatActivity {
         addInListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    JSONObject json = new JSONObject();
-                    JSONObject userRate = new JSONObject().put("status", Rate.getStatuses().get(position));
-                    json.put("user_rate", userRate);
-                    editUserRate(userRate);
-                }catch (JSONException e){
-                    e.printStackTrace();
+                if (position != 0) {
+                    try {
+                        JSONObject json = new JSONObject();
+                        JSONObject userRate = new JSONObject().put("status", Rate.getStatuses().get(position));
+                        json.put("user_rate", userRate);
+                        if (rate != null)
+                            editUserRate(userRate);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -356,7 +367,7 @@ public class AnimeActivity extends AppCompatActivity {
 
     void editUserRate(JSONObject userRate){
         Log.d("request", "editUserRate");
-        Link link = new Link().shiki().editUserRate(userRateId);
+        Link link = new Link().shiki().editUserRate(rate.id);
         Log.d("link", link.get());
         api.jsonReqShikiProtect(link.get(), userRate, new Response.Listener<JSONObject>() {
             @Override

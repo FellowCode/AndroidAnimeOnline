@@ -30,6 +30,7 @@ import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.Fragments.TranslationsPageFragment;
 import com.fellowcode.animewatcher.R;
+import com.fellowcode.animewatcher.User.Rate;
 import com.fellowcode.animewatcher.Utils.NavButtons;
 import com.fellowcode.animewatcher.Utils.Serialize;
 import com.fellowcode.animewatcher.Utils.TranslationsPagerAdapter;
@@ -71,11 +72,14 @@ public class WatchActivity extends AppCompatActivity {
 
     public ArrayList<TranslationsPageFragment> tabs = new ArrayList<>();
 
+    Rate rate;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch);
         authBtn = findViewById(R.id.auth_btn);
+
 
         webCheckLogin = findViewById(R.id.webCheckLogin);
         webCheckLogin.setWebViewClient(new WebViewClient(){
@@ -132,9 +136,21 @@ public class WatchActivity extends AppCompatActivity {
         if (anime.type.equals("movie"))
             episodeControls.setVisibility(View.GONE);
 
-        currentEpisode = anime.episodes.get(episodeIndex);
-        loadTranslations(currentEpisode.id);
+
+
+
+
+        if (getIntent().hasExtra("rate")) {
+            rate = (Rate) getIntent().getSerializableExtra("rate");
+            if (rate.episodes < anime.numberOfEpisodes && !anime.type.equals("movie")) {
+                currentEpisode = anime.getEpisodeByInt(String.valueOf(rate.episodes + 1));
+            }
+        } else {
+            currentEpisode = anime.episodes.get(episodeIndex);
+        }
         episodeEdit.setText(currentEpisode.episodeInt);
+        loadTranslations(currentEpisode.id);
+
 
     }
 
@@ -257,11 +273,34 @@ public class WatchActivity extends AppCompatActivity {
             episodeIndex++;
             currentEpisode = anime.episodes.get(episodeIndex);
             changeEpisode();
+        } else {
+            Toast.makeText(this, R.string.no_more_episodes, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AnimeActivity.class);
+            intent.putExtra("animeAdvanced", anime);
+            startActivity(intent);
         }
     }
 
-    public void episodeWatchedClick(View v){
-
+    public void episodeWatchedClick(final View v){
+        v.setClickable(false);
+        Log.d("request", "setEpisodeWatched");
+        Link link = new Link().shiki().editUserRate(rate.id);
+        Log.d("link", link.get());
+        try {
+            JSONObject json = new JSONObject();
+            JSONObject userRate = new JSONObject().put("episodes", currentEpisode.episodeInt);
+            json.put("user_rate", userRate);
+            api.jsonReqShikiProtect(link.get(), json, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d("response", "rate: "+response.toString());
+                    incEpisodeClick(null);
+                    v.setClickable(true);
+                }
+            });
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
     }
 
     public void changeEpisode(){
@@ -283,16 +322,6 @@ public class WatchActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig){
-        super.onConfigurationChanged(newConfig);
-        /*if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-        }*/
-    }
-
-    @Override
     public void onBackPressed()
     {
         // Notify the VideoEnabledWebChromeClient, and handle it ourselves if it doesn't handle it
@@ -309,6 +338,5 @@ public class WatchActivity extends AppCompatActivity {
             }
         }
     }
-
 
 }

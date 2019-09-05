@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Rate implements Serializable {
 
-    public int id;
+    public long id;
     public int score;
     public String status;
     public int episodes;
@@ -22,12 +22,15 @@ public class Rate implements Serializable {
     }
 
     void Parse(JSONObject rate) throws JSONException {
-        id = rate.getInt("id");
+        id = rate.getLong("id");
         score = rate.getInt("score");
         status = rate.getString("status");
         episodes = rate.getInt("episodes");
         rewatches = rate.getInt("rewatches");
-        animeId = rate.getJSONObject("anime").getInt("id");
+        if (rate.has("anime"))
+            animeId = rate.getJSONObject("anime").getInt("id");
+        else
+            animeId = rate.getInt("target_id");
     }
 
     public static ArrayList<String> getStatusTitles(){

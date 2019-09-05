@@ -46,4 +46,19 @@
     <string name="auth_on_anime365">Авторизоваться в Anime365</string>
     <string name="auth_success">Успешная авторизация</string>
     <string name="list_empty">Список пуст</string>
+    <string name="auth_on_shiki">Авторизация в Shikimori</string>
+    <string name="auth_shiki_success">Успешная авторизация в shikimori!</string>
+    <string name="my_score">Моя оценка</string>
+    <string name="add_in_list">Добавить в список</string>
+    <string name="no_more_episodes">Больше серий нет</string>
+    <string name="shikimori_profile">Shikimori профиль</string>
+    <string name="auth">Авторизация</string>
+    <string name="exit">Выход</string>
+    <string name="lists">Списки</string>
+    <string name="watching">Смотрю</string>
+    <string name="completed">Просмотрено</string>
+    <string name="planned">Запланировано</string>
+    <string name="dropped">Брошено</string>
+    <string name="hold_on">Отложено</string>
+    <string name="authentication">Авторизация…</string>
 </resources>

@@ -26,7 +26,9 @@ public class UserRates {
 
 
 
-    public ArrayList<Rate> rates = new ArrayList<>();
+    public ArrayList<Rate> rates;
+
+    public ArrayList<Long> plannedIds, watchingIds, completedIds, droppedIds, holdOnIds;
 
 
     public UserRates(Context context) {
@@ -38,6 +40,7 @@ public class UserRates {
     }
 
     void Parse(JSONArray rates) throws JSONException {
+        this.rates = new ArrayList<>();
         for (int i = 0; i < rates.length(); i++)
             this.rates.add(new Rate(rates.getJSONObject(i)));
     }
@@ -67,5 +70,28 @@ public class UserRates {
         if (status.equals("dropped"))
             return R.drawable.dropped;
         return 0;
+    }
+
+    public void sort(){
+        plannedIds = new ArrayList<>();
+        watchingIds = new ArrayList<>();
+        completedIds = new ArrayList<>();
+        droppedIds = new ArrayList<>();
+        holdOnIds = new ArrayList<>();
+        for (int i=0; i<rates.size(); i++){
+            Log.d("test", rates.get(i).status);
+            if (rates.get(i).status.equals("planned")){
+                plannedIds.add(rates.get(i).id);
+            } else if (rates.get(i).status.equals("watching")
+                    || rates.get(i).status.equals("rewatching")){
+                watchingIds.add(rates.get(i).id);
+            } else if (rates.get(i).status.equals("completed")){
+                completedIds.add(rates.get(i).id);
+            } else if (rates.get(i).status.equals("dropped")){
+                droppedIds.add(rates.get(i).id);
+            } else if (rates.get(i).status.equals("on_hold")){
+                holdOnIds.add(rates.get(i).id);
+            }
+        }
     }
 }

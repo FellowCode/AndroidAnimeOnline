@@ -83,12 +83,12 @@ public class WebActivity extends AppCompatActivity {
         String[] tmp = url.split("/");
         String authCode = tmp[tmp.length-1];
         Api api = new Api(this);
-
+        webView.setVisibility(View.INVISIBLE);
         api.authInShiki(authCode, new Api.Auth() {
             @Override
             public void onSuccess() {
                 Toast.makeText(context, R.string.auth_shiki_success, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(context, SettingsActivity.class);
+                Intent intent = new Intent(context, ProfileActivity.class);
                 startActivity(intent);
             }
 

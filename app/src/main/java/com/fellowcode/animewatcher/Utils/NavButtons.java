@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.fellowcode.animewatcher.Activities.FavoritesActivity;
 import com.fellowcode.animewatcher.Activities.FiltersListActivity;
 import com.fellowcode.animewatcher.Activities.MainActivity;
+import com.fellowcode.animewatcher.Activities.ProfileActivity;
 import com.fellowcode.animewatcher.Activities.SearchActivity;
 import com.fellowcode.animewatcher.R;
 
@@ -20,17 +21,18 @@ import java.util.Objects;
 
 public class NavButtons {
 
-    LinearLayout homeBtn, favoritesBtn, searchBtn, filterBtn;
+    LinearLayout homeBtn, profileBtn, favoritesBtn, searchBtn, filterBtn;
 
     AppCompatActivity activity;
 
-    public static int HOME = 0, FAVORITES = 1, SEARCH = 2, FILTER = 3;
+    public static int HOME = 0, PROFILE = 1, FAVORITES = 2, SEARCH = 3, FILTER = 4;
 
     Map<Integer, LinearLayout> btns = new HashMap<>();
 
     public NavButtons(final AppCompatActivity activity){
         this.activity = activity;
         homeBtn = activity.findViewById(R.id.home_btn);
+        profileBtn = activity.findViewById(R.id.profile_btn);
         favoritesBtn = activity.findViewById(R.id.favorites_btn);
         searchBtn = activity.findViewById(R.id.search_btn);
         filterBtn = activity.findViewById(R.id.filter_btn);
@@ -39,6 +41,14 @@ public class NavButtons {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, MainActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        profileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, ProfileActivity.class);
                 activity.startActivity(intent);
             }
         });
@@ -68,6 +78,7 @@ public class NavButtons {
         });
 
         btns.put(HOME, homeBtn);
+        btns.put(PROFILE, profileBtn);
         btns.put(FAVORITES, favoritesBtn);
         btns.put(SEARCH, searchBtn);
         btns.put(FILTER, filterBtn);

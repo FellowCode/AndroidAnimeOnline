@@ -220,18 +220,22 @@ public class AnimeList implements Serializable {
 
     public void updateUserRates(){
         Log.d("function", "updateUserRates in animeList");
-        for (int i=0;i<animes.size();i++){
-            animes.get(i).rateStatus = null;
-            for (int j = 0; j< rateStatus.rates.size(); j++){
-                if (animes.get(i).shikiId == rateStatus.rates.get(j).animeId){
-                    animes.get(i).rateStatus = rateStatus.rates.get(j).status;
+        if (rateStatus.rates != null) {
+            for (int i = 0; i < animes.size(); i++) {
+                animes.get(i).rateStatus = null;
+                for (int j = 0; j < rateStatus.rates.size(); j++) {
+                    if (animes.get(i).shikiId == rateStatus.rates.get(j).animeId) {
+                        animes.get(i).rateStatus = rateStatus.rates.get(j).status;
+                    }
+                    if (rateStatus.rates.get(i).status == null)
+                        Log.d("test", "ratestatus is null");
                 }
-                if (rateStatus.rates.get(i).status == null)
-                    Log.d("test", "ratestatus is null");
             }
-        }
-        if (animes.size() > 0 && rateStatus.rates.size()>0) {
-            Log.d("function", "updateUserRates notifyChange");
+            if (animes.size() > 0 && rateStatus.rates.size() > 0) {
+                Log.d("function", "updateUserRates notifyChange");
+                adapter.notifyDataSetChanged();
+            }
+        } else if (animes.size() > 0) {
             adapter.notifyDataSetChanged();
         }
     }

@@ -28,11 +28,16 @@ public class UserShiki implements Serializable {
             refreshToken = userShiki.refreshToken;
             endDateTime = userShiki.endDateTime;
             id = userShiki.id;
-        } else
-            Log.d("test", "userShiki not readed");
+            imageUrl = userShiki.imageUrl;
+            nickname = userShiki.nickname;
+        }
     }
 
     public void save(Context context){
         Serialize.write(context,"userShiki", this);
+    }
+
+    public boolean isAuthenticated(){
+        return accessToken != null && refreshToken != null && endDateTime != 0 && id != 0;
     }
 }

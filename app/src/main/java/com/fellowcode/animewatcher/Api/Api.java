@@ -142,8 +142,8 @@ public class Api implements Serializable {
                             userShiki.endDateTime = authData.getInt("created_at") + authData.getInt("expires_in");
                             userShiki.save(context);
                             if (!isRefresh)
-                                getUserData();
-                            if (listener != null)
+                                getUserData(listener);
+                            else if (listener != null)
                                 listener.onSuccess();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -194,7 +194,7 @@ public class Api implements Serializable {
         queue.add(stringRequest);
     }
 
-    public void getUserData() {
+    public void getUserData(final Auth listener) {
         Log.d("request", "getUserData");
         Link link = new Link().shiki().whoami();
         ReqShikiProtect(link.get(), new Response.Listener<String>() {
@@ -204,28 +204,16 @@ public class Api implements Serializable {
                 try {
                     JSONObject data = new JSONObject(response);
                     userShiki.id = data.getInt("id");
-                    userShiki.imageUrl = data.getJSONObject("image").getString("x48");
+                    userShiki.imageUrl = data.getJSONObject("image").getString("x148");
                     userShiki.nickname = data.getString("nickname");
                     userShiki.save(context);
+                    if (listener != null)
+                        listener.onSuccess();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
-    }
-
-    public void setEpisodeWatched(int rateId, int episodeNum, Response.Listener<JSONObject> listener){
-        Link link = new Link().shiki().editUserRate(rateId);
-
-        try {
-            JSONObject json = new JSONObject();
-            JSONObject userRate = new JSONObject().put("episodes", String.valueOf(episodeNum));
-            json.put("user_rate", userRate);
-            jsonReqShikiProtect(link.get(), json, listener);
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
-
     }
 
     public void getUserRates(final UserRates.Response listener) {

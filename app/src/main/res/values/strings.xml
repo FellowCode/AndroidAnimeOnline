@@ -50,4 +50,15 @@
     <string name="auth_shiki_success">Success auth in shikimori!</string>
     <string name="my_score">My score</string>
     <string name="add_in_list">Add in list</string>
+    <string name="no_more_episodes">No more episodes</string>
+    <string name="shikimori_profile">Shikimori profile</string>
+    <string name="auth">Authenticate</string>
+    <string name="exit">Exit</string>
+    <string name="lists">Lists</string>
+    <string name="watching">Watching</string>
+    <string name="completed">Completed</string>
+    <string name="planned">Planned</string>
+    <string name="dropped">Dropped</string>
+    <string name="hold_on">On hold</string>
+    <string name="authentication">Authentication…</string>
 </resources>

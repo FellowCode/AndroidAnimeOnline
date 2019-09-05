@@ -82,7 +82,7 @@ public class Link implements Serializable {
         return this;
     }
 
-    public Link editUserRate(int rateId){
+    public Link editUserRate(long rateId){
         api = "api/v2/";
         url = "user_rates/"+rateId;
         return this;
