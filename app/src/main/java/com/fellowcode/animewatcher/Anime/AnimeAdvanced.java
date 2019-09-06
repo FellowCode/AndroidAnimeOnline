@@ -54,11 +54,11 @@ public class AnimeAdvanced extends Anime implements Serializable {
         english = anime.english;
         romaji = anime.romaji;
         posterUrl = anime.posterUrl;
+        rateStatus = anime.rateStatus;
     }
 
     @Override
     public void ParseSmAnime(JSONObject anime) throws JSONException {
-        Log.d("test", "startParseSMAnime");
         super.ParseSmAnime(anime);
         season = anime.getString("season");
         numberOfEpisodes = anime.getInt("numberOfEpisodes");

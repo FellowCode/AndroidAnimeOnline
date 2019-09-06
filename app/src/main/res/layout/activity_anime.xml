@@ -253,12 +253,32 @@
                             android:orientation="vertical"
                             android:id="@+id/userListParams"
                             android:visibility="gone">
-                            <Spinner
-                                android:layout_marginTop="10dp"
-                                android:id="@+id/addInList"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"/>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <FrameLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.2"
+                                    android:layout_height="wrap_content"/>
+                                <FrameLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight=".6"
+                                    android:layout_height="wrap_content">
+                                    <com.jaredrummler.materialspinner.MaterialSpinner
+                                        android:layout_marginTop="10dp"
+                                        android:id="@+id/addInList"
+                                        android:maxWidth="300dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:textSize="18sp" />
+                                </FrameLayout>
+
+                                <FrameLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.2"
+                                    android:layout_height="wrap_content"/>
+                            </LinearLayout>
                             <LinearLayout
                                 android:id="@+id/my_score"
                                 android:layout_marginTop="10dp"

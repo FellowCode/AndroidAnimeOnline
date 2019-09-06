@@ -1,5 +1,6 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,7 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -36,8 +39,10 @@ import com.fellowcode.animewatcher.Api.Api;
 import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.User.Rate;
+import com.fellowcode.animewatcher.User.UserRates;
 import com.fellowcode.animewatcher.User.UserShiki;
 import com.fellowcode.animewatcher.Utils.NavButtons;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,9 +76,11 @@ public class AnimeActivity extends AppCompatActivity {
     View progressBar;
     ArrayList<Boolean> requests = new ArrayList<>();
 
-    Spinner addInListSpinner;
+    MaterialSpinner addInListSpinner;
 
     Rate rate;
+
+    Context context = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,18 +112,20 @@ public class AnimeActivity extends AppCompatActivity {
         myScoreEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (Integer.valueOf(myScoreEdit.getText().toString()) <= 10 && Integer.valueOf(myScoreEdit.getText().toString()) >= 0) {
                         try {
                             JSONObject json = new JSONObject();
                             JSONObject userRate = new JSONObject().put("score", myScoreEdit.getText().toString());
                             json.put("user_rate", userRate);
-                            editUserRate(userRate);
+                            if (rate != null)
+                                editUserRate(userRate);
+                            else
+                                createUserRate(userRate);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }
-                    else{
+                    } else {
                         myScoreEdit.setText("");
                     }
                     myScoreEdit.clearFocus();
@@ -142,8 +151,8 @@ public class AnimeActivity extends AppCompatActivity {
             Anime a = (Anime) getIntent().getSerializableExtra("anime");
             anime = new AnimeAdvanced(a);
         }
-        if (getIntent().hasExtra("animeAdvanced")){
-            anime = (AnimeAdvanced)getIntent().getSerializableExtra("animeAdvanced");
+        if (getIntent().hasExtra("animeAdvanced")) {
+            anime = (AnimeAdvanced) getIntent().getSerializableExtra("animeAdvanced");
         }
 
 
@@ -156,10 +165,10 @@ public class AnimeActivity extends AppCompatActivity {
         UpdateFields();
         UpdateFiledsShiki();
 
-        if (api.isShikiAuthenticated()){
+        if (api.isShikiAuthenticated()) {
             userListParams.setVisibility(View.VISIBLE);
             getUserRateForAnime(anime.shikiId);
-            setupSpinner();
+
         }
     }
 
@@ -205,7 +214,7 @@ public class AnimeActivity extends AppCompatActivity {
         api.Request(link.get(), respListener);
     }
 
-    void getUserRateForAnime(int shikiId){
+    void getUserRateForAnime(int shikiId) {
         showProgressBar();
         Link link = new Link().shiki().userRate(shikiId, new UserShiki(this).id);
         Log.d("request", "getUserRateForAnime");
@@ -214,16 +223,17 @@ public class AnimeActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("response", response);
-                try{
+                try {
                     JSONObject data = new JSONArray(response).getJSONObject(0);
                     rate = new Rate(data);
                     if (rate.score > 0)
                         myScoreEdit.setText(String.valueOf(rate.score));
                     int selectIndex = Rate.findStatus(rate.status);
-                    addInListSpinner.setSelection(selectIndex);
+                    setupSpinner(selectIndex);
 
-                } catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
+                    setupSpinner(0);
                 }
                 hideProgressBar();
             }
@@ -231,7 +241,7 @@ public class AnimeActivity extends AppCompatActivity {
 
     }
 
-    void getAnimeCharacters(int id){
+    void getAnimeCharacters(int id) {
         showProgressBar();
         Log.d("request", "getAnimeCharacters");
         Response.Listener<String> respListener = new Response.Listener<String>() {
@@ -281,8 +291,12 @@ public class AnimeActivity extends AppCompatActivity {
         else
             type.setText(anime.typeTitle);
         score.setText(anime.myAnimeListScore);
-        if (anime.episodes.size()>0)
+        if (anime.episodes.size() > 0)
             watchBtn.setVisibility(View.VISIBLE);
+
+        if (anime.rateStatus != null){
+            setupSpinner(Rate.findStatus(anime.rateStatus));
+        }
     }
 
     void UpdateFiledsShiki() {
@@ -292,13 +306,13 @@ public class AnimeActivity extends AppCompatActivity {
         if (anime.next_episode_at != null) {
             next_episode.setText(anime.next_episode_at);
             nextep_layout.setVisibility(View.VISIBLE);
-        }else
+        } else
             nextep_layout.setVisibility(View.GONE);
 
         if (anime.released_on != null) {
             released_on.setText(anime.released_on);
             released_layout.setVisibility(View.VISIBLE);
-        }else
+        } else
             released_layout.setVisibility(View.GONE);
 
         studio.setText(anime.studioName);
@@ -306,7 +320,7 @@ public class AnimeActivity extends AppCompatActivity {
             description.setText(HtmlCompat.fromHtml(anime.descriptionHtml, HtmlCompat.FROM_HTML_MODE_COMPACT));
     }
 
-    public void favoriteBtnClick(View v){
+    public void favoriteBtnClick(View v) {
         if (favorites.checkIn(anime)) {
             favorites.remove(anime);
             favoriteBtn.setImageResource(R.drawable.ic_star);
@@ -316,7 +330,7 @@ public class AnimeActivity extends AppCompatActivity {
         }
     }
 
-    public void watchAnime(View v){
+    public void watchAnime(View v) {
         Intent intent = new Intent(this, WatchActivity.class);
         intent.putExtra("anime", anime);
         if (rate != null)
@@ -324,53 +338,110 @@ public class AnimeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    void showProgressBar(){
+    void showProgressBar() {
         requests.add(true);
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    void hideProgressBar(){
+    void hideProgressBar() {
         requests.remove(0);
-        if(requests.size() == 0)
+        if (requests.size() == 0)
             progressBar.setVisibility(View.INVISIBLE);
     }
 
-    void setupSpinner(){
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_rate_status, Rate.getStatusTitles());
-        addInListSpinner.setAdapter(adapter);
-        addInListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    void setupSpinner(int selectIndex) {
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_rate_status, Rate.getStatusTitles());
+        ArrayList<String> items = Rate.getStatusTitles();
+        if (rate == null){
+            items.remove(items.size()-1);
+        }
+        addInListSpinner.setItems(items);
+        addInListSpinner.setOnItemSelectedListener(
+                new MaterialSpinner.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                        if (position != 0) {
+                            if (Rate.getStatuses().get(position).equals("delete"))
+                                deleteUserRate();
+                            else {
+                                try {
+                                    JSONObject userRate = new JSONObject().put("status", Rate.getStatuses().get(position));
+                                    if (rate != null) {
+                                        editUserRate(userRate);
+                                    } else {
+                                        createUserRate(userRate);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
+        addInListSpinner.setSelectedIndex(selectIndex);
+                /*new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    try {
-                        JSONObject json = new JSONObject();
-                        JSONObject userRate = new JSONObject().put("status", Rate.getStatuses().get(position));
-                        json.put("user_rate", userRate);
-                        if (rate != null)
-                            editUserRate(userRate);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
     }
 
-    void editUserRate(JSONObject userRate){
+    void editUserRate(JSONObject userRate) {
         Log.d("request", "editUserRate");
         Link link = new Link().shiki().editUserRate(rate.id);
         Log.d("link", link.get());
-        api.jsonReqShikiProtect(link.get(), userRate, new Response.Listener<JSONObject>() {
+        api.jsonReqShikiProtect(Request.Method.PUT, link.get(), userRate, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("response", "userRate: "+response.toString());
+                Log.d("response", "userRate: " + response.toString());
             }
         });
 
+    }
+
+    void createUserRate(JSONObject userRate) throws JSONException{
+        Log.d("request", "createUserRate");
+        userRate.put("user_id", new UserShiki(this).id);
+        userRate.put("target_id", anime.shikiId);
+        userRate.put("target_type", "Anime");
+        Link link = new Link().shiki().createUserRate();
+        Log.d("link", link.get());
+        api.jsonReqShikiProtect(Request.Method.POST, link.get(), userRate, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("response", "userRate: " + response.toString());
+                try {
+                    rate = new Rate(response);
+                    new UserRates(context).add(rate).save(context);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    void deleteUserRate(){
+        Log.d("request", "createUserRate");
+        if (rate != null) {
+            Link link = new Link().shiki().editUserRate(rate.id);
+            Log.d("link", link.get());
+            api.jsonReqShikiProtect(Request.Method.DELETE, link.get(), null, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (error == null || error.networkResponse == null) {
+                        Log.d("response", "deleteRate");
+                        new UserRates(context).remove(rate).save(context);
+                        rate = null;
+                        setupSpinner(0);
+                    }
+                }
+            });
+        }
     }
 }

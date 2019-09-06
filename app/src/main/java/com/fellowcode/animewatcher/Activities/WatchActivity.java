@@ -1,9 +1,12 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
 import com.fellowcode.animewatcher.Anime.Episode;
@@ -80,7 +84,7 @@ public class WatchActivity extends AppCompatActivity {
         });
         webCheckLogin.loadUrl("https://smotret-anime-365.ru/users/login");
 
-        NavButtons navButtons = new NavButtons(this);
+        new NavButtons(this);
 
         episodeControls = findViewById(R.id.episodeControls);
 
@@ -168,11 +172,7 @@ public class WatchActivity extends AppCompatActivity {
                     attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
                     attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                     getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14)
-                    {
-                        //noinspection all
-                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-                    }
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 }
                 else
@@ -181,11 +181,7 @@ public class WatchActivity extends AppCompatActivity {
                     attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
                     attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                     getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14)
-                    {
-                        //noinspection all
-                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                    }
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
 
@@ -247,6 +243,17 @@ public class WatchActivity extends AppCompatActivity {
         tabs.clear();
         viewPager.setAdapter(new TranslationsPagerAdapter(getSupportFragmentManager(), this));
         tabLayout.setupWithViewPager(viewPager);
+
+        autoSelectTranslation();
+    }
+
+    public void autoSelectTranslation(){
+        SharedPreferences translSaver = getSharedPreferences("translSaver", Context.MODE_PRIVATE);
+        Log.d("test", String.valueOf(translSaver.getInt("transPage", 0)));
+        viewPager.setCurrentItem(translSaver.getInt("transPage", 0));
+        Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + viewPager.getCurrentItem());
+        if (page != null)
+            ((TranslationsPageFragment)page).setSelect();
     }
 
     public void decEpisodeClick(View v){
@@ -282,7 +289,7 @@ public class WatchActivity extends AppCompatActivity {
             JSONObject userRate = new JSONObject().put("episodes", currentEpisode.episodeInt);
             json.put("user_rate", userRate);
             Log.d("request", "user_rate: "+json);
-            api.jsonReqShikiProtect(link.get(), json, new Response.Listener<JSONObject>() {
+            api.jsonReqShikiProtect(Request.Method.PUT, link.get(), json, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d("response", "rate: "+response.toString());

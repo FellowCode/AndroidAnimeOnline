@@ -88,6 +88,12 @@ public class Link implements Serializable {
         return this;
     }
 
+    public Link createUserRate(){
+        api = "api/v2/";
+        url = "user_rates";
+        return this;
+    }
+
     public Link animeByShikiId(int shikiId){
         url = "series";
         addField("myAnimeListId", shikiId);

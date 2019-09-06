@@ -92,14 +92,18 @@ public class Api implements Serializable {
         queue.add(stringRequest);
     }
 
-    public void jsonReqShikiProtect(final String url, JSONObject json, final Response.Listener<JSONObject> respList) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, json, respList,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+    public void jsonReqShikiProtect(int method, final String url, JSONObject json, final Response.Listener<JSONObject> respList) {
+        jsonReqShikiProtect(method, url, json, respList, null);
 
-                    }
-                }){
+    }
+
+    public void jsonReqShikiProtect(int method, final String url, JSONObject json, final Response.ErrorListener errorList) {
+        jsonReqShikiProtect(method, url, json, null, errorList);
+
+    }
+
+    void jsonReqShikiProtect(int method, final String url, JSONObject json, final Response.Listener<JSONObject> respList, final Response.ErrorListener errorList){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(method, url, json, respList, errorList){
             @Override
             public Map getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap();
@@ -110,7 +114,6 @@ public class Api implements Serializable {
         };
         jsonObjectRequest.setTag("Api");
         queue.add(jsonObjectRequest);
-
     }
 
     public void authInShiki(String authCode, Auth listener) {

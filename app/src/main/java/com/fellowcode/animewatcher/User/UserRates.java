@@ -87,4 +87,19 @@ public class UserRates {
             }
         }
     }
+
+    public UserRates add(Rate rate){
+        rates.add(rate);
+        return this;
+    }
+
+    public UserRates remove(Rate rate){
+        for (int i=0;i<rates.size();i++){
+            if (rates.get(i).id == rate.id) {
+                rates.remove(i);
+                return this;
+            }
+        }
+        return this;
+    }
 }

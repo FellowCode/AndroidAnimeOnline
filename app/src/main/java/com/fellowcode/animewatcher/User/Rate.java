@@ -43,7 +43,7 @@ public class Rate implements Serializable {
         statusTitles.add("Просмотрено");
         statusTitles.add("Отложено");
         statusTitles.add("Брошено");
-        statusTitles.add("Удалить из спика");
+        statusTitles.add("Удалить из спиcка");
         return statusTitles;
     }
 
