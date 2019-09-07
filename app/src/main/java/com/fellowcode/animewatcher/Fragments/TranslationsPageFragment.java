@@ -23,6 +23,8 @@ import com.fellowcode.animewatcher.Adapters.TranslationsPage;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TranslationsPageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -42,6 +44,7 @@ public class TranslationsPageFragment extends Fragment {
     SharedPreferences transSaver;
 
     int preselectIndex = -1;
+    int animeId;
 
 
     public static TranslationsPageFragment newInstance(int page){
@@ -81,8 +84,10 @@ public class TranslationsPageFragment extends Fragment {
         } else if (mPage == TranslationsPage.RAW) {
             tr = episode.getRawTranslations();
         }
+        if (tr != null && tr.size() > 0)
+            animeId = tr.get(0).animeId;
 
-        TranslationAdapter adapter = new TranslationAdapter(context, tr);
+        TranslationAdapter adapter = new TranslationAdapter(context, tr, preselectIndex);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -91,21 +96,21 @@ public class TranslationsPageFragment extends Fragment {
                 watchActivity.setupVideo(tr.get(position).embedUrl);
                 watchActivity.clearSelectTranslation();
                 selectTranslationItem(position);
-                transSaver.edit().putInt("transPage", mPage).putString("authors", tr.get(position).authorsSummary).apply();
+
+                transSaver.edit().putInt("transPage", mPage)
+                        .putInt(animeId+"transPage", mPage)
+                        .putString(animeId+"authors", tr.get(position).authorsSummary)
+                        .apply();
             }
         });
-        Log.d("test", "onCreateView"+mPage);
-        Log.d("test", String.valueOf(listView.getChildCount()));
-
-        if (preselectIndex >= 0)
-            selectTranslationItem(preselectIndex);
 
         return view;
     }
 
     public void clearSelect(){
-        /*if (currentSelectItem != null)
-            currentSelectItem.setBackgroundColor(getResources().getColor(android.R.color.transparent));*/
+        for (int i=0;i<tr.size();i++){
+            clearSelectItem(i);
+        }
     }
 
     public void hideList(){
@@ -113,12 +118,20 @@ public class TranslationsPageFragment extends Fragment {
     }
 
     public void setSelect(){
-        String authors = transSaver.getString("authors", "");
+        String authors = transSaver.getString(animeId+"authors", "");
         Log.d("test", "authors: "+authors);
         for (int i=0; i<tr.size(); i++){
             if (tr.get(i).authorsSummary.equals(authors)) {
                 watchActivity.setupVideo(tr.get(i).embedUrl);
                 preselectIndex = i;
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        selectTranslationItem(preselectIndex);
+                    }
+                }, 500);
+
+                Log.d("test", "autoSelect"+preselectIndex);
                 return;
             }
         }
@@ -134,4 +147,13 @@ public class TranslationsPageFragment extends Fragment {
         mainLayout.setBackgroundResource(R.drawable.translation_select_bg);
     }
 
+    void clearSelectItem(int index){
+        View v = listView.getChildAt(index - listView.getFirstVisiblePosition());
+
+        if (v==null)
+            return;
+
+        View mainLayout = v.findViewById(R.id.mainLayout);
+        mainLayout.setBackgroundResource(R.drawable.translation_bg);
+    }
 }

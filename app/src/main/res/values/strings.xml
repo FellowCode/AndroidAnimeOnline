@@ -62,4 +62,8 @@
     <string name="hold_on">On hold</string>
     <string name="authentication">Authentication…</string>
     <string name="no_name">No name</string>
+    <string name="added_in_favorites">Added in favorites</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="sm_anime_profile">Smotret-anime profile</string>
+    <string name="exit_success">Exit success</string>
 </resources>

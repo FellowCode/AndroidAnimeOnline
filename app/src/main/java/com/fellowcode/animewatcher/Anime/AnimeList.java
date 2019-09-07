@@ -1,6 +1,7 @@
 package com.fellowcode.animewatcher.Anime;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -221,10 +222,13 @@ public class AnimeList implements Serializable {
         updateUserRates();
     }
 
+
     public void updateUserRates(){
         Log.d("function", "updateUserRates in animeList");
         if (rateStatus.rates != null) {
-            for (int i = 0; i < animes.size(); i++) {
+            UpdateUserRatesTask task = new UpdateUserRatesTask();
+            task.execute(animes);
+            /*for (int i = 0; i < animes.size(); i++) {
                 animes.get(i).rateStatus = null;
                 for (int j = 0; j < rateStatus.rates.size(); j++) {
                     if (animes.get(i).shikiId == rateStatus.rates.get(j).animeId) {
@@ -237,9 +241,43 @@ public class AnimeList implements Serializable {
             if (animes.size() > 0 && rateStatus.rates.size() > 0) {
                 Log.d("function", "updateUserRates notifyChange");
                 adapter.notifyDataSetChanged();
-            }
+            }*/
         } else if (animes.size() > 0) {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class UpdateUserRatesTask extends AsyncTask<ArrayList<Anime>, Void, ArrayList<Anime>>{
+        @Override
+        protected ArrayList<Anime> doInBackground(ArrayList<Anime>... parameter) {
+            ArrayList<Anime> animes = parameter[0];
+            for (int i = 0; i < animes.size(); i++) {
+                animes.get(i).rateStatus = null;
+                for (int j = 0; j < rateStatus.rates.size(); j++) {
+                    if (animes.get(i).shikiId == rateStatus.rates.get(j).animeId) {
+                        animes.get(i).rateStatus = rateStatus.rates.get(j).status;
+                    }
+                    if (rateStatus.rates.get(i).status == null)
+                        Log.d("test", "ratestatus is null");
+                }
+            }
+            // [... Выполните задачу в фоновом режиме, обновите переменную myProgress...]
+            // [... Продолжение выполнения фоновой задачи ...]
+            // Верните значение, ранее переданное в метод onPostExecute
+            return animes;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Anime> result) {
+            super.onPostExecute(result);
+
+            animes = result;
+            if (animes.size() > 0 && rateStatus.rates.size() > 0) {
+                Log.d("function", "updateUserRates notifyChange");
+                adapter.notifyDataSetChanged();
+            }
+            // [... Сообщите о результате через обновление пользовательского
+            // интерфейса, диалоговое окно или уведомление ...]
         }
     }
 }

@@ -202,4 +202,12 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        for (int i=0;i<animeLists.size(); i++){
+            animeLists.get(i).setUserRates(new UserRates(this));
+        }
+    }
+
 }

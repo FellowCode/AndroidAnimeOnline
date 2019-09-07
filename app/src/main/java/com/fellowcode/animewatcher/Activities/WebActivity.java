@@ -18,8 +18,6 @@ import com.fellowcode.animewatcher.Api.Link;
 import com.fellowcode.animewatcher.R;
 import com.fellowcode.animewatcher.Utils.NavButtons;
 
-import java.util.BitSet;
-
 public class WebActivity extends AppCompatActivity {
 
     WebView webView;
@@ -46,20 +44,28 @@ public class WebActivity extends AppCompatActivity {
 
 
         if (requestType!=null){
-            if (requestType.equals("login")) {
+            if (requestType.equals("smAnimeAuth")) {
                 webView.setWebViewClient(new WebViewClient() {
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                        Log.d("webView", "onPageFinished: " + url);
-                        if (url.equals("https://smotret-anime-365.ru/users/profile"))
-                            onLoginSuccess();
+                        Log.d("webView", "url:"+url);
+                        if (url.equals("https://smotret-anime-365.ru/") || url.equals("https://smotret-anime-365.ru/users/profile"))
+                            onLoginSmAnime();
                     }
                 });
                 webView.loadUrl("https://smotret-anime-365.ru/users/login");
+            } else if (requestType.equals("smAnimeExit")){
+                webView.setWebViewClient(new WebViewClient() {
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                        Log.d("webView", "url:"+url);
+                        if (url.equals("https://smotret-anime-365.ru/"))
+                            onExitSmAnime();
+                    }
+                });
+                webView.loadUrl("https://smotret-anime-365.ru/users/logout");
             }
             else if (requestType.equals("shikiOAuth2")){
                 webView.setWebViewClient(new WebViewClient() {
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                        Log.d("webView", "onPageFinished: " + url);
                         if (url.contains(Link.shikiUrl + "oauth/authorize/")) {
                             authShiki(url);
                         }
@@ -73,8 +79,17 @@ public class WebActivity extends AppCompatActivity {
         }
     }
 
-    void onLoginSuccess(){
+    void onLoginSmAnime(){
+        SharedPreferences auth = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        auth.edit().putBoolean("authSmAnime", true).apply();
         Toast.makeText(this, R.string.auth_success, Toast.LENGTH_SHORT).show();
+        onBackPressed();
+    }
+
+    void onExitSmAnime(){
+        SharedPreferences auth = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        auth.edit().putBoolean("authSmAnime", false).apply();
+        Toast.makeText(this, R.string.exit_success, Toast.LENGTH_SHORT).show();
         onBackPressed();
     }
 
@@ -88,8 +103,7 @@ public class WebActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 Toast.makeText(context, R.string.auth_shiki_success, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(context, ProfileActivity.class);
-                startActivity(intent);
+                onBackPressed();
             }
 
             @Override

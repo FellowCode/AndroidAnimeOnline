@@ -90,7 +90,8 @@ public class Anime implements Serializable {
             isAiring = 1;
         else
             isAiring = 0;
-        year = Integer.valueOf(anime.getString("aired_on").split("-")[0]);
+        if (!anime.isNull("aired_on"))
+            year = Integer.valueOf(anime.getString("aired_on").split("-")[0]);
     }
 
 

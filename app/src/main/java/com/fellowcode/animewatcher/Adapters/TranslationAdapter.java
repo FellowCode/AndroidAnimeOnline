@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,14 @@ public class TranslationAdapter extends ArrayAdapter<Translation> {
     private Context context;
     private List<Translation> translationList = new ArrayList<>();
 
-    public TranslationAdapter(@NonNull Context context, ArrayList<Translation> list){
+    private int selectIndex;
+
+    public TranslationAdapter(@NonNull Context context, ArrayList<Translation> list, int selectIndex){
         super(context, 0, list);
         this.context = context;
         translationList = list;
+        this.selectIndex = selectIndex;
+        Log.d("test", "sI0: "+selectIndex);
     }
 
     @SuppressLint("DefaultLocale")
@@ -65,6 +70,12 @@ public class TranslationAdapter extends ArrayAdapter<Translation> {
 
         if (currTrans.height == 0)
             height.setVisibility(View.GONE);
+
+        View mainLayout = listItem.findViewById(R.id.mainLayout);
+        if (position == selectIndex) {
+            Log.d("test", "selectIndex"+selectIndex);
+            mainLayout.setBackgroundResource(R.drawable.translation_select_bg);
+        }
 
         return listItem;
     }

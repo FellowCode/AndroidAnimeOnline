@@ -16,6 +16,7 @@ public class Translation implements Serializable {
     String typeLang;
     public String authorsSummary;
     public String embedUrl;
+    public int animeId;
 
     public Translation(JSONObject translation) throws JSONException {
         Parse(translation);
@@ -34,6 +35,7 @@ public class Translation implements Serializable {
         if (authorsSummary.length() == 0)
             authorsSummary = "Неизвестный";
         embedUrl = translation.getString("embedUrl");
+        animeId = translation.getInt("seriesId");
     }
 
     public String getSummary(){

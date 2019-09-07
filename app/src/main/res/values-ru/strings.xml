@@ -61,4 +61,9 @@
     <string name="dropped">Брошено</string>
     <string name="hold_on">Отложено</string>
     <string name="authentication">Авторизация…</string>
+    <string name="no_name">Неизвестный</string>
+    <string name="added_in_favorites">Добавлено в избранное</string>
+    <string name="remove_from_favorites">Удалено из избранного</string>
+    <string name="sm_anime_profile">Smotret-anime профиль</string>
+    <string name="exit_success">Успешный выход</string>
 </resources>

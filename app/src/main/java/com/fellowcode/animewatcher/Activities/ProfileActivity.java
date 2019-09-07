@@ -2,8 +2,10 @@ package com.fellowcode.animewatcher.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    View shikiProfile, authBtn, exitBtn;
+    View shikiProfile, authBtn, exitBtn, authSmAnime, exitSmAnime;
     ImageView userAvatar;
     TextView nickname, plannedCount, watchingCount, completedCount, droppedCount, holdOnCount;
 
@@ -30,6 +32,8 @@ public class ProfileActivity extends AppCompatActivity {
     UserRates userRates;
 
     Context context = this;
+
+    boolean shikiAuth = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -45,12 +49,13 @@ public class ProfileActivity extends AppCompatActivity {
         completedCount = findViewById(R.id.completedCount);
         droppedCount = findViewById(R.id.droppedCount);
         holdOnCount = findViewById(R.id.holdOnCount);
+        authSmAnime = findViewById(R.id.smAnimeAuth);
+        exitSmAnime = findViewById(R.id.smAnimeExit);
 
 
         api = new Api(this);
 
         userShiki = new UserShiki(this);
-
         if (userShiki.isAuthenticated()){
             authBtn.setVisibility(View.GONE);
             exitBtn.setVisibility(View.VISIBLE);
@@ -114,6 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         finish();
         startActivity(intent);
+        shikiAuth = false;
 
     }
 
@@ -122,5 +128,52 @@ public class ProfileActivity extends AppCompatActivity {
         intent.putExtra("status", status);
         intent.putExtra("animeIds", ids);
         startActivity(intent);
+    }
+
+    public void smAnimeAuthClick(View v){
+        Intent intent = new Intent(this, WebActivity.class);
+        intent.putExtra("requestType", "smAnimeAuth");
+        startActivity(intent);
+    }
+
+    public void smAnimeExitClick(View v){
+        Intent intent = new Intent(this, WebActivity.class);
+        intent.putExtra("requestType", "smAnimeExit");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("test", "onResume");
+
+        userShiki = new UserShiki(this);
+        if (userShiki.isAuthenticated()){
+            authBtn.setVisibility(View.GONE);
+            exitBtn.setVisibility(View.VISIBLE);
+            shikiProfile.setVisibility(View.VISIBLE);
+            Glide.with(this).load(userShiki.imageUrl).centerCrop().into(userAvatar);
+            nickname.setText(userShiki.nickname);
+
+            api.getUserRates(new UserRates.Response() {
+                @Override
+                public void onResponse() {
+                    userRates = new UserRates(context);
+                    userRates.sort();
+                    plannedCount.setText(String.valueOf(userRates.plannedIds.size()));
+                    watchingCount.setText(String.valueOf(userRates.watchingIds.size()));
+                    completedCount.setText(String.valueOf(userRates.completedIds.size()));
+                    droppedCount.setText(String.valueOf(userRates.droppedIds.size()));
+                    holdOnCount.setText(String.valueOf(userRates.onHoldIds.size()));
+
+                }
+            });
+            shikiAuth = true;
+        }
+        SharedPreferences auth = getSharedPreferences("auth", Context.MODE_PRIVATE);
+        if (auth.getBoolean("authSmAnime", false)){
+            authSmAnime.setVisibility(View.GONE);
+            exitSmAnime.setVisibility(View.VISIBLE);
+        }
     }
 }

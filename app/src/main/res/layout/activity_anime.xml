@@ -282,28 +282,28 @@
                             <LinearLayout
                                 android:id="@+id/my_score"
                                 android:layout_marginTop="10dp"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
                                 android:visibility="visible">
-
-                                <TextView
+                                <FrameLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"/>
+                                <RatingBar
+                                    android:id="@+id/ratingIndicator"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="20sp"
-                                    android:text="@string/my_score"/>
-                                <EditText
-                                    android:id="@+id/my_score_edit"
-                                    android:layout_marginStart="10dp"
-                                    android:layout_width="35dp"
+                                    />
+                                <TextView
+                                    android:id="@+id/ratingView"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:textSize="24sp"
+                                    android:layout_marginBottom="5dp"
+                                    android:layout_gravity="center_vertical"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/filter_input"
-                                    android:textSize="20sp"
-                                    android:paddingStart="5dp"
-                                    android:paddingEnd="5dp"
-                                    android:imeOptions="actionDone"
-                                    android:digits="0123456789"
-                                    android:inputType="number"/>
+                                    android:paddingStart="10dp"
+                                    android:paddingEnd="0dp"/>
                             </LinearLayout>
                         </LinearLayout>
                         <LinearLayout

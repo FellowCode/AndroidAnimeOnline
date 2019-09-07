@@ -77,7 +77,6 @@ public class Api implements Serializable {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("req-error", error.toString());
-                        Toast.makeText(context, R.string.load_error, Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override

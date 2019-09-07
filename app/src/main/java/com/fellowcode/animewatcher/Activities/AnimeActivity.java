@@ -1,5 +1,6 @@
 package com.fellowcode.animewatcher.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -11,16 +12,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -66,7 +63,6 @@ public class AnimeActivity extends AppCompatActivity {
     RecyclerView charactersView;
 
     View userListParams;
-    EditText myScoreEdit;
 
     ImageView favoriteBtn;
     View watchBtn;
@@ -81,6 +77,9 @@ public class AnimeActivity extends AppCompatActivity {
     Rate rate;
 
     Context context = this;
+
+    RatingBar ratingBar;
+    TextView ratingText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,34 +102,30 @@ public class AnimeActivity extends AppCompatActivity {
         studio = findViewById(R.id.studio);
         loader = findViewById(R.id.loader);
         userListParams = findViewById(R.id.userListParams);
-        myScoreEdit = findViewById(R.id.my_score_edit);
         favoriteBtn = findViewById(R.id.favorite_btn);
         watchBtn = findViewById(R.id.watch_btn);
         progressBar = findViewById(R.id.progressBar);
         addInListSpinner = findViewById(R.id.addInList);
+        ratingBar = findViewById(R.id.ratingIndicator);
+        ratingText = findViewById(R.id.ratingView);
 
-        myScoreEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (Integer.valueOf(myScoreEdit.getText().toString()) <= 10 && Integer.valueOf(myScoreEdit.getText().toString()) >= 0) {
-                        try {
-                            JSONObject json = new JSONObject();
-                            JSONObject userRate = new JSONObject().put("score", myScoreEdit.getText().toString());
-                            json.put("user_rate", userRate);
-                            if (rate != null)
-                                editUserRate(userRate);
-                            else
-                                createUserRate(userRate);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        myScoreEdit.setText("");
-                    }
-                    myScoreEdit.clearFocus();
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Log.d("test", "rating:"+rating);
+                int r = (int)(rating*2);
+                ratingText.setText(String.valueOf(r));
+                try {
+                    JSONObject json = new JSONObject();
+                    JSONObject userRate = new JSONObject().put("score", r);
+                    json.put("user_rate", userRate);
+                    if (rate != null)
+                        editUserRate(userRate);
+                    else
+                        createUserRate(userRate);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                return false;
             }
         });
 
@@ -226,8 +221,10 @@ public class AnimeActivity extends AppCompatActivity {
                 try {
                     JSONObject data = new JSONArray(response).getJSONObject(0);
                     rate = new Rate(data);
-                    if (rate.score > 0)
-                        myScoreEdit.setText(String.valueOf(rate.score));
+                    if (rate.score > 0) {
+                        ratingBar.setRating((float)(rate.score/2.0));
+                        ratingText.setText(String.valueOf(rate.score));
+                    }
                     int selectIndex = Rate.findStatus(rate.status);
                     setupSpinner(selectIndex);
 
@@ -324,9 +321,11 @@ public class AnimeActivity extends AppCompatActivity {
         if (favorites.checkIn(anime)) {
             favorites.remove(anime);
             favoriteBtn.setImageResource(R.drawable.ic_star);
+            Toast.makeText(this, R.string.added_in_favorites, Toast.LENGTH_SHORT).show();
         } else {
             favorites.add(anime);
             favoriteBtn.setImageResource(R.drawable.ic_star_fill);
+            Toast.makeText(this, R.string.remove_from_favorites, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -349,11 +348,14 @@ public class AnimeActivity extends AppCompatActivity {
             progressBar.setVisibility(View.INVISIBLE);
     }
 
+    @SuppressLint("DefaultLocale")
     void setupSpinner(int selectIndex) {
         //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_rate_status, Rate.getStatusTitles());
         ArrayList<String> items = Rate.getStatusTitles();
         if (rate == null){
             items.remove(items.size()-1);
+        }else if (selectIndex == Rate.getStatuses().indexOf("watching") || selectIndex == Rate.getStatuses().indexOf("dropped")){
+            items.set(selectIndex, Rate.getStatusTitles().get(selectIndex)+String.format(" (%d эп.)", rate.episodes));
         }
         addInListSpinner.setItems(items);
         addInListSpinner.setOnItemSelectedListener(
@@ -379,17 +381,6 @@ public class AnimeActivity extends AppCompatActivity {
                     }
                 });
         addInListSpinner.setSelectedIndex(selectIndex);
-                /*new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
     }
 
     void editUserRate(JSONObject userRate) {
@@ -444,4 +435,5 @@ public class AnimeActivity extends AppCompatActivity {
             });
         }
     }
+
 }

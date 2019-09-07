@@ -200,7 +200,7 @@ public class WatchActivity extends AppCompatActivity {
 
     public void onAuthBtnClick(View v){
         Intent intent = new Intent(this, WebActivity.class);
-        intent.putExtra("requestType", "login");
+        intent.putExtra("requestType", "smAnimeAuth");
         startActivity(intent);
     }
 
@@ -250,7 +250,12 @@ public class WatchActivity extends AppCompatActivity {
     public void autoSelectTranslation(){
         SharedPreferences translSaver = getSharedPreferences("translSaver", Context.MODE_PRIVATE);
         Log.d("test", String.valueOf(translSaver.getInt("transPage", 0)));
-        viewPager.setCurrentItem(translSaver.getInt("transPage", 0));
+        int pageNum;
+        if (translSaver.getInt(anime.id+"transPage", -1) != -1){
+            pageNum = translSaver.getInt(anime.id+"transPage", 0);
+        } else
+            pageNum = translSaver.getInt("transPage", 0);
+        viewPager.setCurrentItem(pageNum);
         Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + viewPager.getCurrentItem());
         if (page != null)
             ((TranslationsPageFragment)page).setSelect();
