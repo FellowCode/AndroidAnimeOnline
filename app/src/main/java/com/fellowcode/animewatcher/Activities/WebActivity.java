@@ -26,6 +26,8 @@ public class WebActivity extends AppCompatActivity {
 
     Context context = this;
 
+    View progressbar, smAnimeIsAuthBtn;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -34,6 +36,8 @@ public class WebActivity extends AppCompatActivity {
         new NavButtons(this);
 
         webView = findViewById(R.id.webView);
+        progressbar = findViewById(R.id.progressBar);
+        smAnimeIsAuthBtn = findViewById(R.id.smAnimeIsAuthBtn);
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -45,30 +49,31 @@ public class WebActivity extends AppCompatActivity {
 
         if (requestType!=null){
             if (requestType.equals("smAnimeAuth")) {
-                webView.setWebViewClient(new WebViewClient() {
-                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                        Log.d("webView", "url:"+url);
-                        if (url.equals("https://smotret-anime-365.ru/") || url.equals("https://smotret-anime-365.ru/users/profile"))
-                            onLoginSmAnime();
-                    }
-                });
-                webView.loadUrl("https://smotret-anime-365.ru/users/login");
+                loginSmAnime();
             } else if (requestType.equals("smAnimeExit")){
+                progressbar.setVisibility(View.VISIBLE);
                 webView.setWebViewClient(new WebViewClient() {
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         Log.d("webView", "url:"+url);
                         if (url.equals("https://smotret-anime-365.ru/"))
                             onExitSmAnime();
                     }
+                    public void onPageFinished(WebView view, String url){
+                        progressbar.setVisibility(View.INVISIBLE);
+                    }
                 });
                 webView.loadUrl("https://smotret-anime-365.ru/users/logout");
             }
             else if (requestType.equals("shikiOAuth2")){
+                progressbar.setVisibility(View.VISIBLE);
                 webView.setWebViewClient(new WebViewClient() {
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         if (url.contains(Link.shikiUrl + "oauth/authorize/")) {
                             authShiki(url);
                         }
+                    }
+                    public void onPageFinished(WebView view, String url){
+                        progressbar.setVisibility(View.INVISIBLE);
                     }
 
                 });
@@ -77,6 +82,28 @@ public class WebActivity extends AppCompatActivity {
                 webView.loadUrl(url);
             }
         }
+    }
+
+    public void setSmAnimeIsAuthBtnClick(View v){
+        loginSmAnime();
+    }
+
+    void loginSmAnime(){
+        smAnimeIsAuthBtn.setVisibility(View.VISIBLE);
+        webView.setWebViewClient(new WebViewClient() {
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                progressbar.setVisibility(View.VISIBLE);
+                Log.d("webView", "url:"+url);
+                if (url.equals("https://smotret-anime-365.ru/")
+                        || url.equals("https://smotret-anime-365.ru")
+                        || url.equals("https://smotret-anime-365.ru/users/profile"))
+                    onLoginSmAnime();
+            }
+            public void onPageFinished(WebView view, String url){
+                progressbar.setVisibility(View.INVISIBLE);
+            }
+        });
+        webView.loadUrl("https://smotret-anime-365.ru/users/login");
     }
 
     void onLoginSmAnime(){

@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
         checkDate();
 
-
         if (api.isShikiAuthenticated()) {
             if (startedFromLauncher || new UserRates(context).rates.size() == 0) {
                 api.refreshShikiTokens(new Api.Auth() {
@@ -116,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
-
             }
         }
     }
@@ -165,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void checkDate() {
+        final int m = 10, y = 2019;
         Log.d("request", "checkDate");
         StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://worldclockapi.com/api/json/est/now",
                 new Response.Listener<String>() {
@@ -176,13 +174,12 @@ public class MainActivity extends AppCompatActivity {
                             int year = Integer.valueOf(currentDate.split("-")[0]);
                             int month = Integer.valueOf(currentDate.split("-")[1]);
                             int day = Integer.valueOf(currentDate.split("-")[2]);
-                            if (year > 2019 || (month > 8 && day > 15)) {
+                            if (year > y || month > m) {
                                 finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 },
                 new Response.ErrorListener() {

@@ -66,4 +66,7 @@
     <string name="remove_from_favorites">Удалено из избранного</string>
     <string name="sm_anime_profile">Smotret-anime профиль</string>
     <string name="exit_success">Успешный выход</string>
+    <string name="isAuth">Я авторизован</string>
+    <string name="alt_setting">Альт. вселенная</string>
+    <string name="alt_version">Альт. версия</string>
 </resources>

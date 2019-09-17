@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.fellowcode.animewatcher.Adapters.RelationAdapter;
 import com.fellowcode.animewatcher.Anime.Anime;
 import com.fellowcode.animewatcher.Anime.AnimeAdvanced;
 import com.fellowcode.animewatcher.Anime.AnimeRatings;
@@ -60,7 +62,7 @@ public class AnimeActivity extends AppCompatActivity {
 
     View loader;
 
-    RecyclerView charactersView;
+    RecyclerView relationsView, charactersView;
 
     View userListParams;
 
@@ -135,6 +137,8 @@ public class AnimeActivity extends AppCompatActivity {
 
         charactersView = findViewById(R.id.charactersView);
         charactersView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        relationsView = findViewById(R.id.relationsView);
+        relationsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -157,6 +161,7 @@ public class AnimeActivity extends AppCompatActivity {
         getAnimeRequest(anime.shikiId);
         getAnimeFromShikiReq(anime.shikiId);
         getAnimeCharacters(anime.shikiId);
+        getAnimeRelations(anime.shikiId);
         UpdateFields();
         UpdateFiledsShiki();
 
@@ -256,6 +261,30 @@ public class AnimeActivity extends AppCompatActivity {
             }
         };
         Link link = new Link().shiki().roles(id);
+        Log.d("link", link.get());
+        api.Request(link.get(), respListener);
+    }
+
+    void getAnimeRelations(int id){
+        showProgressBar();
+        Log.d("request", "getAnimeRelations");
+        Response.Listener<String> respListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("response", response);
+                try {
+                    anime.ParseShikiRelations(new JSONArray(response));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                hideProgressBar();
+                RelationAdapter adapter = new RelationAdapter(anime.relations);
+                relationsView.setAdapter(adapter);
+                if (anime.relations.size() == 0)
+                    relationsView.setVisibility(View.GONE);
+            }
+        };
+        Link link = new Link().shiki().related(id);
         Log.d("link", link.get());
         api.Request(link.get(), respListener);
     }

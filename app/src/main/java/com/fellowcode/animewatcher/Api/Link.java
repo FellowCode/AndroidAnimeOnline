@@ -1,5 +1,6 @@
 package com.fellowcode.animewatcher.Api;
 
+import com.fellowcode.animewatcher.Anime.AnimeList;
 import com.fellowcode.animewatcher.User.UserShiki;
 
 import java.io.Serializable;
@@ -52,13 +53,13 @@ public class Link implements Serializable {
             addField("fields", "id,myAnimeListId,isActive,isAiring,myAnimeListScore,year,type,typeTitle,titles,posterUrlSmall,posterUrl");
             addField("isHentai", 0);
         }
-        addField("limit", 20);
+        addField("limit", AnimeList.ANIME_LIMIT);
         return this;
     }
 
     public Link offset(int offset){
         if (isShiki){
-            addUniqueField("page", offset/20+1);
+            addUniqueField("page", offset/AnimeList.ANIME_LIMIT+1);
         } else
             addUniqueField("offset", offset);
         return this;
@@ -117,6 +118,12 @@ public class Link implements Serializable {
     public Link roles(int shikiId){
         anime(shikiId);
         url += "/roles";
+        return this;
+    }
+
+    public Link related(int shikiId){
+        anime(shikiId);
+        url += "/related";
         return this;
     }
 

@@ -42,7 +42,7 @@ public class AnimeList implements Serializable {
 
     boolean endOfList = false;
 
-    private int ANIME_LIMIT = 20;
+    public static int ANIME_LIMIT = 20;
 
     UserRates rateStatus;
 
@@ -188,12 +188,10 @@ public class AnimeList implements Serializable {
 
     public void search(String query){
         String[] queries = query.split(" ");
-        Log.d("test", String.valueOf(animes.size()));
         isSearch = true;
         searches.clear();
         for (int i=0;i<animes.size();i++){
             for (String query1 : queries) {
-                Log.d("test", animes.get(i).russian.toLowerCase() + " " + query1.toLowerCase());
                 if (animes.get(i).russian != null && animes.get(i).russian.toLowerCase().contains(query1.toLowerCase()))
                     searches.add(animes.get(i));
                 if (animes.get(i).english != null && animes.get(i).english.toLowerCase().contains(query1.toLowerCase()))

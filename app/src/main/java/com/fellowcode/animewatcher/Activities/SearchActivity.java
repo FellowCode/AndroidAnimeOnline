@@ -106,6 +106,15 @@ public class SearchActivity extends AppCompatActivity {
             searchView.requestFocusFromTouch();
         }
 
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    searchItem.collapseActionView();
+                    searchView.setQuery("", false);
+                }
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }

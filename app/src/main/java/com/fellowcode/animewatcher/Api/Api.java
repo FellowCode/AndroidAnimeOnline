@@ -71,6 +71,7 @@ public class Api implements Serializable {
     }
 
     public void ReqShikiProtect(final String url, final Response.Listener<String> respList) {
+        userShiki = new UserShiki(context);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 respList,
                 new Response.ErrorListener() {
@@ -102,6 +103,7 @@ public class Api implements Serializable {
     }
 
     void jsonReqShikiProtect(int method, final String url, JSONObject json, final Response.Listener<JSONObject> respList, final Response.ErrorListener errorList){
+        userShiki = new UserShiki(context);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(method, url, json, respList, errorList){
             @Override
             public Map getHeaders() throws AuthFailureError {

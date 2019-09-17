@@ -2,6 +2,7 @@ package com.fellowcode.animewatcher.Anime;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
+import android.widget.RelativeLayout;
 
 import com.fellowcode.animewatcher.Api.Link;
 
@@ -32,6 +33,7 @@ public class AnimeAdvanced extends Anime implements Serializable {
     public ArrayList<Episode> episodes = new ArrayList<>();
     ArrayList<Genre> genres = new ArrayList<>();
     public ArrayList<AnimeCharacter> characters = new ArrayList<>();
+    public ArrayList<Relation> relations = new ArrayList<>();
 
     public AnimeAdvanced(JSONObject anime) throws JSONException {
         ParseSmAnime(anime);
@@ -97,6 +99,20 @@ public class AnimeAdvanced extends Anime implements Serializable {
                 ch.russian = character.getString("russian");
                 ch.image = Link.shikiUrl + character.getJSONObject("image").getString("preview");
                 this.characters.add(ch);
+            }
+        }
+    }
+    public void ParseShikiRelations(JSONArray relations) throws JSONException{
+        this.relations.clear();
+        for (int i=0; i<relations.length(); i++){
+            JSONObject obj = relations.getJSONObject(i);
+            if (!obj.isNull("anime")) {
+                Relation relation = new Relation();
+                relation.rel_eng = obj.getString("relation");
+                relation.rel_rus = obj.getString("relation_russian");
+                relation.anime = new Anime();
+                relation.anime.ParseShiki(obj.getJSONObject("anime"));
+                this.relations.add(relation);
             }
         }
     }

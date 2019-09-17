@@ -375,6 +375,13 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/relationsView"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="10dp"
+                    android:background="?recyclerBg" />
+
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/charactersView"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
