@@ -124,10 +124,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     void openAnimeList(String status, ArrayList<Integer> ids){
-        Intent intent = new Intent(this, UserAnimeListActivity.class);
-        intent.putExtra("status", status);
-        intent.putExtra("animeIds", ids);
-        startActivity(intent);
+        if (ids != null && ids.size() > 0) {
+            Intent intent = new Intent(this, UserAnimeListActivity.class);
+            intent.putExtra("status", status);
+            intent.putExtra("animeIds", ids);
+            startActivity(intent);
+        }
     }
 
     public void smAnimeAuthClick(View v){
